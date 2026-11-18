@@ -2,6 +2,8 @@ package com.dpp.payment.repository;
 
 import com.dpp.payment.domain.PaymentAttempt;
 import com.dpp.payment.domain.PaymentStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,6 +20,14 @@ public interface PaymentAttemptRepository extends JpaRepository<PaymentAttempt, 
     Optional<PaymentAttempt> findByProviderPaymentId(String providerPaymentId);
 
     Optional<PaymentAttempt> findFirstByOrderIdAndStatus(UUID orderId, PaymentStatus status);
+
+    List<PaymentAttempt> findByOrderId(UUID orderId);
+
+    List<PaymentAttempt> findByOrderIdAndStatus(UUID orderId, PaymentStatus status);
+
+    Page<PaymentAttempt> findByCustomerId(UUID customerId, Pageable pageable);
+
+    long countByStatus(PaymentStatus status);
 
     @Query("select p.id from PaymentAttempt p where p.status = :status and p.createdAt < :cutoff order by p.createdAt")
     List<UUID> findIdsByStatusAndCreatedAtBefore(@Param("status") PaymentStatus status,

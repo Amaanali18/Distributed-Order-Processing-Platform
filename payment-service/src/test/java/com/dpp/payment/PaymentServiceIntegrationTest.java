@@ -2,6 +2,8 @@ package com.dpp.payment;
 
 import com.dpp.common.error.ApiException;
 import com.dpp.common.error.ErrorCode;
+import com.dpp.payment.client.OrderClient;
+import com.dpp.payment.client.dto.OrderView;
 import com.dpp.payment.domain.PaymentStatus;
 import com.dpp.payment.domain.RefundStatus;
 import com.dpp.payment.provider.PaymentOutcome;
@@ -14,17 +16,21 @@ import com.dpp.payment.web.dto.PaymentResponse;
 import com.dpp.payment.web.dto.RefundRequest;
 import com.dpp.payment.web.dto.RefundResponse;
 import com.dpp.testing.AbstractPostgresIntegrationTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @TestPropertySource(properties = {
@@ -44,7 +50,16 @@ class PaymentServiceIntegrationTest extends AbstractPostgresIntegrationTest {
     @Autowired
     JdbcTemplate jdbc;
 
+    @MockitoBean
+    OrderClient orderClient;
+
     private final UUID customerId = UUID.randomUUID();
+
+    @BeforeEach
+    void stubOrder() {
+        when(orderClient.getOrder(any())).thenAnswer(inv -> new OrderView(
+                inv.getArgument(0), customerId, "PENDING", new BigDecimal("19.98"), "USD"));
+    }
 
     private String newKey() {
         return "key-" + UUID.randomUUID();
@@ -124,7 +139,7 @@ class PaymentServiceIntegrationTest extends AbstractPostgresIntegrationTest {
         PaymentResponse confirmed = payments.confirm(payment.id(), customerId, false,
                 new ConfirmPaymentRequest(PaymentOutcome.SUCCEEDED), "corr-confirm");
 
-        assertThat(confirmed.status()).isEqualTo(PaymentStatus.SUCCEEDED);
+        assertThat(confirmed.status()).isEqualTo(PaymentStatus.SUCCESS);
         assertThat(outboxCount(orderId, "PaymentSucceeded")).isEqualTo(1);
     }
 
@@ -184,7 +199,7 @@ class PaymentServiceIntegrationTest extends AbstractPostgresIntegrationTest {
 
         payments.handleProviderEvent(ProviderPayment.succeeded(payment.providerPaymentId()), "corr-webhook");
 
-        assertThat(attempts.findById(payment.id()).orElseThrow().getStatus()).isEqualTo(PaymentStatus.SUCCEEDED);
+        assertThat(attempts.findById(payment.id()).orElseThrow().getStatus()).isEqualTo(PaymentStatus.SUCCESS);
         assertThat(outboxCount(orderId, "PaymentSucceeded")).isEqualTo(1);
     }
 
@@ -195,10 +210,53 @@ class PaymentServiceIntegrationTest extends AbstractPostgresIntegrationTest {
         payments.confirm(payment.id(), customerId, false,
                 new ConfirmPaymentRequest(PaymentOutcome.SUCCEEDED), "corr");
 
-        payments.onOrderCancelled(UUID.randomUUID(), orderId, "corr-cancel");
+        payments.onOrderTerminated(UUID.randomUUID(), com.dpp.common.event.EventTypes.ORDER_CANCELLED, orderId, "corr-cancel");
 
         assertThat(attempts.findById(payment.id()).orElseThrow().getStatus()).isEqualTo(PaymentStatus.REFUNDED);
         assertThat(outboxCount(orderId, "RefundCompleted")).isEqualTo(1);
+    }
+
+    @Test
+    void lateSuccessAfterOrderTerminationRefundsAutomatically() {
+        UUID orderId = UUID.randomUUID();
+        PaymentResponse payment = createPayment(orderId);
+
+        payments.onOrderTerminated(UUID.randomUUID(),
+                com.dpp.common.event.EventTypes.ORDER_CANCELLED, orderId, "corr-cancel");
+        payments.confirm(payment.id(), customerId, false,
+                new ConfirmPaymentRequest(PaymentOutcome.SUCCEEDED), "corr-confirm");
+
+        assertThat(attempts.findById(payment.id()).orElseThrow().getStatus()).isEqualTo(PaymentStatus.REFUNDED);
+        assertThat(outboxCount(orderId, "PaymentSucceeded")).isZero();
+        assertThat(outboxCount(orderId, "RefundCompleted")).isEqualTo(1);
+    }
+
+    @Test
+    void failedPaymentAfterTerminationDoesNotRefund() {
+        UUID orderId = UUID.randomUUID();
+        PaymentResponse payment = createPayment(orderId);
+
+        payments.onOrderTerminated(UUID.randomUUID(),
+                com.dpp.common.event.EventTypes.ORDER_FAILED, orderId, "corr-fail");
+        payments.confirm(payment.id(), customerId, false,
+                new ConfirmPaymentRequest(PaymentOutcome.FAILED), "corr-confirm");
+
+        assertThat(attempts.findById(payment.id()).orElseThrow().getStatus()).isEqualTo(PaymentStatus.FAILED);
+        assertThat(outboxCount(orderId, "PaymentFailed")).isEqualTo(1);
+        assertThat(outboxCount(orderId, "RefundCompleted")).isZero();
+    }
+
+    @Test
+    void recordsPaymentStateTransitions() {
+        UUID orderId = UUID.randomUUID();
+        PaymentResponse payment = createPayment(orderId);
+        payments.confirm(payment.id(), customerId, false,
+                new ConfirmPaymentRequest(PaymentOutcome.SUCCEEDED), "corr");
+
+        Integer count = jdbc.queryForObject(
+                "SELECT count(*) FROM payment_attempt_transitions WHERE payment_id = ?", Integer.class, payment.id());
+
+        assertThat(count).isEqualTo(2);
     }
 
     @Test
@@ -208,5 +266,60 @@ class PaymentServiceIntegrationTest extends AbstractPostgresIntegrationTest {
         assertThatThrownBy(() -> payments.get(payment.id(), UUID.randomUUID(), false))
                 .isInstanceOfSatisfying(ApiException.class,
                         ex -> assertThat(ex.errorCode()).isEqualTo(ErrorCode.FORBIDDEN));
+    }
+
+    @Test
+    void createRejectsAmountThatDoesNotMatchOrderTotal() {
+        UUID orderId = UUID.randomUUID();
+
+        assertThatThrownBy(() -> payments.create(
+                new CreatePaymentRequest(orderId, new BigDecimal("1.00"), "USD"), customerId, newKey()))
+                .isInstanceOfSatisfying(ApiException.class,
+                        ex -> assertThat(ex.errorCode()).isEqualTo(ErrorCode.VALIDATION_ERROR));
+    }
+
+    @Test
+    void createRejectsOrderOwnedByAnotherCustomer() {
+        UUID orderId = UUID.randomUUID();
+        when(orderClient.getOrder(orderId)).thenReturn(
+                new OrderView(orderId, UUID.randomUUID(), "PENDING", new BigDecimal("19.98"), "USD"));
+
+        assertThatThrownBy(() -> payments.create(
+                new CreatePaymentRequest(orderId, new BigDecimal("19.98"), "USD"), customerId, newKey()))
+                .isInstanceOfSatisfying(ApiException.class,
+                        ex -> assertThat(ex.errorCode()).isEqualTo(ErrorCode.FORBIDDEN));
+    }
+
+    @Test
+    void createRejectsOrderThatIsNotPending() {
+        UUID orderId = UUID.randomUUID();
+        when(orderClient.getOrder(orderId)).thenReturn(
+                new OrderView(orderId, customerId, "CONFIRMED", new BigDecimal("19.98"), "USD"));
+
+        assertThatThrownBy(() -> payments.create(
+                new CreatePaymentRequest(orderId, new BigDecimal("19.98"), "USD"), customerId, newKey()))
+                .isInstanceOfSatisfying(ApiException.class,
+                        ex -> assertThat(ex.errorCode()).isEqualTo(ErrorCode.CONFLICT));
+    }
+
+    @Test
+    void findByOrderRejectsOtherCustomers() {
+        UUID orderId = UUID.randomUUID();
+        createPayment(orderId);
+
+        assertThatThrownBy(() -> payments.findByOrder(orderId, UUID.randomUUID(), false))
+                .isInstanceOfSatisfying(ApiException.class,
+                        ex -> assertThat(ex.errorCode()).isEqualTo(ErrorCode.FORBIDDEN));
+        assertThat(payments.findByOrder(orderId, customerId, false).orderId()).isEqualTo(orderId);
+    }
+
+    @Test
+    void listMineReturnsOnlyOwnPayments() {
+        createPayment(UUID.randomUUID());
+
+        assertThat(payments.listMine(customerId, org.springframework.data.domain.PageRequest.of(0, 10))
+                .getTotalElements()).isPositive();
+        assertThat(payments.listMine(UUID.randomUUID(), org.springframework.data.domain.PageRequest.of(0, 10))
+                .getTotalElements()).isZero();
     }
 }

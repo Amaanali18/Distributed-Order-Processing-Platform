@@ -47,4 +47,13 @@ public class PaymentReconciliationJob {
             }
         }
     }
+
+    @Scheduled(fixedDelayString = "${dpp.payment.reconciliation.interval-ms:60000}")
+    public void reconcilePendingRefunds() {
+        try {
+            paymentService.reconcileRefunds();
+        } catch (Exception e) {
+            log.warn("Refund reconciliation failed: {}", e.getMessage());
+        }
+    }
 }

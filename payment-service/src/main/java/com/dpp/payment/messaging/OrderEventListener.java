@@ -29,14 +29,14 @@ public class OrderEventListener {
     public void onMessage(String message) {
         JsonNode event = read(message);
         String eventType = event.path("eventType").asText();
-        if (!EventTypes.ORDER_CANCELLED.equals(eventType)) {
+        if (!EventTypes.ORDER_CANCELLED.equals(eventType) && !EventTypes.ORDER_FAILED.equals(eventType)) {
             log.debug("Ignoring order event of type {}", eventType);
             return;
         }
         UUID eventId = UUID.fromString(event.path("eventId").asText());
         UUID orderId = UUID.fromString(event.path("aggregateId").asText());
         String correlationId = event.path("correlationId").asText(null);
-        paymentService.onOrderCancelled(eventId, orderId, correlationId);
+        paymentService.onOrderTerminated(eventId, eventType, orderId, correlationId);
     }
 
     private JsonNode read(String message) {

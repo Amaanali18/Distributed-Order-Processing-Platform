@@ -46,6 +46,9 @@ public class Refund {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
+
     protected Refund() {
     }
 
@@ -60,11 +63,31 @@ public class Refund {
         this.providerRefundId = providerRefundId;
         this.reason = reason;
         this.createdAt = Instant.now();
+        this.updatedAt = this.createdAt;
     }
 
     public static Refund record(UUID id, UUID paymentId, UUID orderId, BigDecimal amount, String currency,
                                 RefundStatus status, String providerRefundId, String reason) {
         return new Refund(id, paymentId, orderId, amount, currency, status, providerRefundId, reason);
+    }
+
+    public void markPending() {
+        this.status = RefundStatus.PENDING;
+        this.updatedAt = Instant.now();
+    }
+
+    public void markSucceeded() {
+        this.status = RefundStatus.SUCCEEDED;
+        this.updatedAt = Instant.now();
+    }
+
+    public void markFailed() {
+        this.status = RefundStatus.FAILED;
+        this.updatedAt = Instant.now();
+    }
+
+    public boolean isPending() {
+        return status == RefundStatus.PENDING;
     }
 
     public UUID getId() {
@@ -101,5 +124,9 @@ public class Refund {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
     }
 }

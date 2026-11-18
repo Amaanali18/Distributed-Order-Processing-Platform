@@ -2,9 +2,13 @@ package com.dpp.payment.web;
 
 import com.dpp.common.web.CorrelationId;
 import com.dpp.payment.service.PaymentService;
+import com.dpp.payment.web.dto.PaymentResponse;
 import com.dpp.payment.web.dto.RefundRequest;
 import com.dpp.payment.web.dto.RefundResponse;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +25,16 @@ public class AdminPaymentController {
 
     public AdminPaymentController(PaymentService paymentService) {
         this.paymentService = paymentService;
+    }
+
+    @GetMapping
+    public Page<PaymentResponse> list(Pageable pageable) {
+        return paymentService.listAll(pageable);
+    }
+
+    @GetMapping("/{id}")
+    public PaymentResponse get(@PathVariable UUID id) {
+        return paymentService.get(id, null, true);
     }
 
     @PostMapping("/{id}/refund")

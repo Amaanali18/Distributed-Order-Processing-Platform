@@ -52,6 +52,9 @@ public class PaymentAttempt {
     @Column(name = "failure_message", length = 512)
     private String failureMessage;
 
+    @Column(name = "cancel_requested_at")
+    private Instant cancelRequestedAt;
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
@@ -83,7 +86,7 @@ public class PaymentAttempt {
     }
 
     public void succeed() {
-        this.status = PaymentStatus.SUCCEEDED;
+        this.status = PaymentStatus.SUCCESS;
         this.failureCode = null;
         this.failureMessage = null;
         this.updatedAt = Instant.now();
@@ -96,9 +99,34 @@ public class PaymentAttempt {
         this.updatedAt = Instant.now();
     }
 
+    public void markRefundPending() {
+        this.status = PaymentStatus.REFUND_PENDING;
+        this.updatedAt = Instant.now();
+    }
+
+    public void revertToSuccess() {
+        this.status = PaymentStatus.SUCCESS;
+        this.updatedAt = Instant.now();
+    }
+
     public void markRefunded() {
         this.status = PaymentStatus.REFUNDED;
         this.updatedAt = Instant.now();
+    }
+
+    public void requestCancellation() {
+        if (this.cancelRequestedAt == null) {
+            this.cancelRequestedAt = Instant.now();
+            this.updatedAt = Instant.now();
+        }
+    }
+
+    public boolean isCancellationRequested() {
+        return cancelRequestedAt != null;
+    }
+
+    public Instant getCancelRequestedAt() {
+        return cancelRequestedAt;
     }
 
     public boolean matches(UUID orderId, BigDecimal amount, String currency) {

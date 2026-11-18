@@ -5,12 +5,14 @@ import com.dpp.common.error.ErrorCode;
 import com.dpp.payment.config.PaymentProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -23,8 +25,12 @@ public class StripePaymentProvider implements PaymentProvider {
 
     public StripePaymentProvider(PaymentProperties.Stripe settings) {
         this.webhookSecret = settings.webhookSecret();
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(Duration.ofMillis(settings.connectTimeoutMsOrDefault()));
+        requestFactory.setReadTimeout(Duration.ofMillis(settings.readTimeoutMsOrDefault()));
         this.http = RestClient.builder()
                 .baseUrl(settings.apiBaseOrDefault())
+                .requestFactory(requestFactory)
                 .defaultHeader("Authorization", "Bearer " + (settings.apiKey() == null ? "" : settings.apiKey()))
                 .build();
     }
@@ -74,12 +80,19 @@ public class StripePaymentProvider implements PaymentProvider {
             form.add("reason", mapRefundReason(command.reason()));
         }
         JsonNode response = post("/v1/refunds", form, command.idempotencyKey());
-        String status = response.path("status").asText();
-        if ("succeeded".equals(status) || "pending".equals(status)) {
-            return new ProviderRefund(response.path("id").asText(), ProviderRefundStatus.SUCCEEDED, null);
+        return toProviderRefund(response);
+    }
+
+    @Override
+    public Optional<ProviderRefund> findRefund(String providerRefundId) {
+        try {
+            return Optional.of(toProviderRefund(get("/v1/refunds/" + providerRefundId)));
+        } catch (ApiException e) {
+            if (e.errorCode() == ErrorCode.NOT_FOUND) {
+                return Optional.empty();
+            }
+            throw e;
         }
-        return new ProviderRefund(response.path("id").asText(), ProviderRefundStatus.FAILED,
-                response.path("failure_reason").asText(null));
     }
 
     @Override
@@ -110,6 +123,16 @@ public class StripePaymentProvider implements PaymentProvider {
         } catch (Exception e) {
             throw new ApiException(ErrorCode.SERVICE_UNAVAILABLE, "Stripe request failed: " + e.getMessage());
         }
+    }
+
+    private ProviderRefund toProviderRefund(JsonNode node) {
+        String id = node.path("id").asText();
+        return switch (node.path("status").asText()) {
+            case "succeeded" -> new ProviderRefund(id, ProviderRefundStatus.SUCCEEDED, null);
+            case "pending", "requires_action" -> new ProviderRefund(id, ProviderRefundStatus.PENDING, null);
+            default -> new ProviderRefund(id, ProviderRefundStatus.FAILED,
+                    node.path("failure_reason").asText(null));
+        };
     }
 
     private ProviderPayment toProviderPayment(JsonNode node) {

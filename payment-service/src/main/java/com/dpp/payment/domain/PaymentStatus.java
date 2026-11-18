@@ -2,7 +2,8 @@ package com.dpp.payment.domain;
 
 public enum PaymentStatus {
     PENDING,
-    SUCCEEDED,
+    SUCCESS,
     FAILED,
+    REFUND_PENDING,
     REFUNDED
 }

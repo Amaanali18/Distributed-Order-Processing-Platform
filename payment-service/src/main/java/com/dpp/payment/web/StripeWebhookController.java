@@ -5,10 +5,12 @@ import com.dpp.payment.provider.PaymentProvider;
 import com.dpp.payment.provider.ProviderPayment;
 import com.dpp.payment.provider.ProviderPaymentStatus;
 import com.dpp.payment.service.PaymentService;
+import com.dpp.payment.service.WebhookEventStore;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,13 +26,16 @@ public class StripeWebhookController {
 
     private final PaymentProvider provider;
     private final PaymentService paymentService;
+    private final WebhookEventStore webhookEvents;
     private final ObjectMapper objectMapper;
 
     public StripeWebhookController(PaymentProvider provider,
                                    PaymentService paymentService,
+                                   WebhookEventStore webhookEvents,
                                    ObjectMapper objectMapper) {
         this.provider = provider;
         this.paymentService = paymentService;
+        this.webhookEvents = webhookEvents;
         this.objectMapper = objectMapper;
     }
 
@@ -43,11 +48,30 @@ public class StripeWebhookController {
         }
 
         JsonNode event = read(payload);
+        if (event == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        String eventId = event.path("id").asText();
+        if (eventId.isBlank()) {
+            log.warn("Rejected Stripe webhook without an event id");
+            return ResponseEntity.badRequest().build();
+        }
         String type = event.path("type").asText();
+
+        WebhookEventStore.Claim claim = webhookEvents.claim(eventId, type);
+        if (claim == WebhookEventStore.Claim.DUPLICATE) {
+            log.debug("Ignoring duplicate Stripe webhook {}", eventId);
+            return ResponseEntity.ok().build();
+        }
+        if (claim == WebhookEventStore.Claim.IN_PROGRESS) {
+            // Ask the provider to redeliver instead of silently dropping the event.
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
         JsonNode intent = event.path("data").path("object");
         String providerPaymentId = intent.path("id").asText();
         if (providerPaymentId.isBlank()) {
-            return ResponseEntity.ok().build();
+            return ignore(eventId);
         }
 
         ProviderPaymentStatus status = switch (type) {
@@ -57,7 +81,7 @@ public class StripeWebhookController {
         };
         if (status == null) {
             log.debug("Ignoring unhandled Stripe event type {}", type);
-            return ResponseEntity.ok().build();
+            return ignore(eventId);
         }
 
         ProviderPayment result = status == ProviderPaymentStatus.SUCCEEDED
@@ -66,15 +90,32 @@ public class StripeWebhookController {
                         intent.path("last_payment_error").path("code").asText(null),
                         intent.path("last_payment_error").path("message").asText(null));
 
-        paymentService.handleProviderEvent(result, CorrelationId.current());
-        return ResponseEntity.ok().build();
+        try {
+            paymentService.handleProviderEvent(result, CorrelationId.current());
+            webhookEvents.markProcessed(eventId);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            webhookEvents.markFailed(eventId);
+            throw e;
+        }
+    }
+
+    private ResponseEntity<Void> ignore(String eventId) {
+        try {
+            webhookEvents.markProcessed(eventId);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            webhookEvents.markFailed(eventId);
+            throw e;
+        }
     }
 
     private JsonNode read(String payload) {
         try {
             return objectMapper.readTree(payload);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Malformed Stripe webhook payload", e);
+            log.warn("Rejected malformed Stripe webhook payload");
+            return null;
         }
     }
 }

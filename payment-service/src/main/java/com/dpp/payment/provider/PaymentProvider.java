@@ -14,5 +14,7 @@ public interface PaymentProvider {
 
     ProviderRefund refund(CreateRefundCommand command);
 
+    Optional<ProviderRefund> findRefund(String providerRefundId);
+
     boolean verifyWebhookSignature(String payload, String signatureHeader);
 }

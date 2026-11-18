@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SimulatedPaymentProvider implements PaymentProvider {
 
     private final Map<String, ProviderPayment> payments = new ConcurrentHashMap<>();
+    private final Map<String, ProviderRefund> refunds = new ConcurrentHashMap<>();
 
     @Override
     public String name() {
@@ -47,7 +48,15 @@ public class SimulatedPaymentProvider implements PaymentProvider {
 
     @Override
     public ProviderRefund refund(CreateRefundCommand command) {
-        return new ProviderRefund("sim_re_" + UUID.randomUUID(), ProviderRefundStatus.SUCCEEDED, null);
+        ProviderRefund refund = new ProviderRefund("sim_re_" + UUID.randomUUID(),
+                ProviderRefundStatus.SUCCEEDED, null);
+        refunds.put(refund.providerRefundId(), refund);
+        return refund;
+    }
+
+    @Override
+    public Optional<ProviderRefund> findRefund(String providerRefundId) {
+        return Optional.ofNullable(refunds.get(providerRefundId));
     }
 
     @Override

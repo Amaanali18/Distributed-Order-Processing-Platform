@@ -37,6 +37,15 @@ public class PaymentEventPublisher {
                 "reason", attempt.getFailureMessage() == null ? "payment failed" : attempt.getFailureMessage()));
     }
 
+    public void refundPending(PaymentAttempt attempt, Refund refund, String correlationId) {
+        publish(EventTypes.REFUND_PENDING, attempt, correlationId, Map.of(
+                "orderId", attempt.getOrderId(),
+                "paymentId", attempt.getId(),
+                "refundId", refund.getId(),
+                "amount", refund.getAmount(),
+                "currency", refund.getCurrency()));
+    }
+
     public void refundCompleted(PaymentAttempt attempt, Refund refund, String correlationId) {
         publish(EventTypes.REFUND_COMPLETED, attempt, correlationId, Map.of(
                 "orderId", attempt.getOrderId(),

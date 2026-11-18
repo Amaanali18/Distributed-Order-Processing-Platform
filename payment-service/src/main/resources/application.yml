@@ -47,7 +47,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,metrics,prometheus
   endpoint:
     health:
       probes:
@@ -57,15 +57,66 @@ springdoc:
   api-docs:
     path: /v3/api-docs
 
+spring.cloud.openfeign:
+  circuitbreaker:
+    enabled: true
+  client:
+    config:
+      default:
+        connect-timeout: ${FEIGN_CONNECT_TIMEOUT_MS:2000}
+        read-timeout: ${FEIGN_READ_TIMEOUT_MS:5000}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      order-service:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 20
+        minimum-number-of-calls: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        register-health-indicator: true
+  retry:
+    instances:
+      order-service:
+        max-attempts: 3
+        wait-duration: 300ms
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+        retry-exceptions:
+          - java.io.IOException
+          - feign.RetryableException
+          - java.util.concurrent.TimeoutException
+  timelimiter:
+    instances:
+      # Match the Feign read timeout; the Resilience4j default (~1s) cuts off
+      # calls that were still within the configured HTTP deadline.
+      order-service:
+        timeout-duration: 5s
+        cancel-running-future: true
+
 dpp:
+  internal:
+    service-token: ${DPP_INTERNAL_SERVICE_TOKEN:dpp-internal-dev-token}
   payment:
     provider: ${PAYMENT_PROVIDER:simulated}
     stripe:
       api-key: ${STRIPE_API_KEY:}
       webhook-secret: ${STRIPE_WEBHOOK_SECRET:}
       api-base: ${STRIPE_API_BASE:https://api.stripe.com}
+      connect-timeout-ms: ${STRIPE_CONNECT_TIMEOUT_MS:2000}
+      read-timeout-ms: ${STRIPE_READ_TIMEOUT_MS:5000}
     reconciliation:
       interval-ms: ${PAYMENT_RECONCILE_INTERVAL_MS:60000}
       stale-after-ms: ${PAYMENT_RECONCILE_STALE_MS:120000}
+    resilience:
+      sliding-window-size: ${PAYMENT_CB_WINDOW:20}
+      minimum-number-of-calls: ${PAYMENT_CB_MIN_CALLS:10}
+      failure-rate-threshold: ${PAYMENT_CB_FAILURE_RATE:50}
+      wait-duration-in-open-state-ms: ${PAYMENT_CB_OPEN_MS:10000}
+      slow-call-duration-ms: ${PAYMENT_CB_SLOW_MS:3000}
+      permitted-calls-in-half-open-state: ${PAYMENT_CB_HALF_OPEN:5}
+      max-attempts: ${PAYMENT_RETRY_MAX:3}
+      retry-wait-ms: ${PAYMENT_RETRY_WAIT_MS:300}
   outbox:
     poll-interval-ms: 500

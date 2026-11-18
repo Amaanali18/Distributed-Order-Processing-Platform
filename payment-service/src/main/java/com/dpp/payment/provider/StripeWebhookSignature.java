@@ -39,12 +39,21 @@ public final class StripeWebhookSignature {
         if (timestamp == null || expected == null) {
             return false;
         }
-        if (Duration.between(Instant.ofEpochSecond(timestamp), Instant.now()).abs().compareTo(TOLERANCE) > 0) {
+        try {
+            if (Duration.between(Instant.ofEpochSecond(timestamp), Instant.now()).abs().compareTo(TOLERANCE) > 0) {
+                return false;
+            }
+        } catch (RuntimeException e) {
             return false;
         }
         String signedPayload = timestamp + "." + payload;
         byte[] computed = hmacSha256(signedPayload, secret);
-        byte[] provided = HexFormat.of().parseHex(expected);
+        byte[] provided;
+        try {
+            provided = HexFormat.of().parseHex(expected);
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
         return MessageDigest.isEqual(computed, provided);
     }
 

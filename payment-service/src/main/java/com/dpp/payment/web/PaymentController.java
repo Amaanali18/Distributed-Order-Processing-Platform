@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,14 +40,19 @@ public class PaymentController {
         return paymentService.create(request, CurrentUser.id(jwt), idempotencyKey);
     }
 
+    @GetMapping
+    public Page<PaymentResponse> listMine(Pageable pageable, @AuthenticationPrincipal Jwt jwt) {
+        return paymentService.listMine(CurrentUser.id(jwt), pageable);
+    }
+
     @GetMapping("/{id}")
     public PaymentResponse get(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt) {
         return paymentService.get(id, CurrentUser.id(jwt), CurrentUser.isAdmin(jwt));
     }
 
     @GetMapping("/by-order/{orderId}")
-    public PaymentResponse findByOrder(@PathVariable UUID orderId) {
-        return paymentService.findByOrder(orderId);
+    public PaymentResponse findByOrder(@PathVariable UUID orderId, @AuthenticationPrincipal Jwt jwt) {
+        return paymentService.findByOrder(orderId, CurrentUser.id(jwt), CurrentUser.isAdmin(jwt));
     }
 
     @PostMapping("/{id}/confirm")
