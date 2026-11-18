@@ -45,6 +45,14 @@ public class OrderEventPublisher {
                 "reason", reason));
     }
 
+    public void orderFailed(Order order, String correlationId, String reason) {
+        publish(EventTypes.ORDER_FAILED, order, correlationId, Map.of(
+                "orderId", order.getId(),
+                "customerId", order.getCustomerId(),
+                "customerEmail", order.getCustomerEmail(),
+                "reason", reason));
+    }
+
     private void publish(String eventType, Order order, String correlationId, Map<String, Object> payload) {
         EventEnvelope<Map<String, Object>> envelope =
                 EventEnvelope.of(eventType, SCHEMA_VERSION, order.getId().toString(),

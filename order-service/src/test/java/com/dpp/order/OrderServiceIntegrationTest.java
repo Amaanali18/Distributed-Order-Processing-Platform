@@ -75,6 +75,17 @@ class OrderServiceIntegrationTest extends AbstractPostgresIntegrationTest {
     }
 
     @Test
+    void expirePendingOrderCancelsAndPublishesCompensationEvent() {
+        OrderResponse order = createOrder(UUID.randomUUID());
+
+        orders.expire(order.id(), "corr-expiry");
+
+        assertThat(orders.get(order.id(), UUID.randomUUID(), true).status()).isEqualTo(OrderStatus.CANCELLED);
+        assertThat(outboxCount(order.id(), "OrderCancelled")).isEqualTo(1);
+        verify(catalog).release(order.id());
+    }
+
+    @Test
     void createComputesTotalsAndPublishesOrderCreated() {
         UUID customerId = UUID.randomUUID();
 
@@ -143,13 +154,36 @@ class OrderServiceIntegrationTest extends AbstractPostgresIntegrationTest {
     }
 
     @Test
-    void paymentFailedCancelsOrderAndReleasesReservation() {
+    void paymentFailedFailsOrderAndReleasesReservation() {
         OrderResponse order = createOrder(UUID.randomUUID());
 
         saga.onPaymentFailed(UUID.randomUUID(), order.id(), "corr-pay");
 
         verify(catalog).release(order.id());
-        assertThat(orders.get(order.id(), order.customerId(), false).status()).isEqualTo(OrderStatus.CANCELLED);
-        assertThat(outboxCount(order.id(), "OrderCancelled")).isEqualTo(1);
+        assertThat(orders.get(order.id(), order.customerId(), false).status()).isEqualTo(OrderStatus.FAILED);
+        assertThat(outboxCount(order.id(), "OrderFailed")).isEqualTo(1);
+    }
+
+    @Test
+    void refundPendingMovesConfirmedOrderToRefundPending() {
+        OrderResponse order = createOrder(UUID.randomUUID());
+        saga.onPaymentSucceeded(UUID.randomUUID(), order.id(), "corr-pay");
+
+        saga.onRefundPending(UUID.randomUUID(), order.id(), "corr-refund");
+
+        assertThat(orders.get(order.id(), order.customerId(), false).status())
+                .isEqualTo(OrderStatus.REFUND_PENDING);
+    }
+
+    @Test
+    void refundCompletedMovesRefundPendingOrderToRefunded() {
+        OrderResponse order = createOrder(UUID.randomUUID());
+        saga.onPaymentSucceeded(UUID.randomUUID(), order.id(), "corr-pay");
+        saga.onRefundPending(UUID.randomUUID(), order.id(), "corr-refund");
+
+        saga.onRefundCompleted(UUID.randomUUID(), order.id(), "corr-refund");
+
+        assertThat(orders.get(order.id(), order.customerId(), false).status())
+                .isEqualTo(OrderStatus.REFUNDED);
     }
 }

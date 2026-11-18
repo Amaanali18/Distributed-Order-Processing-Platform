@@ -77,18 +77,51 @@ public class Order {
     }
 
     public void confirm() {
+        requireStatus(OrderStatus.PENDING, "confirm");
         this.status = OrderStatus.CONFIRMED;
         this.updatedAt = Instant.now();
     }
 
+    public void fail() {
+        requireStatus(OrderStatus.PENDING, "fail");
+        this.status = OrderStatus.FAILED;
+        this.updatedAt = Instant.now();
+    }
+
     public void cancel() {
+        requireStatus(OrderStatus.PENDING, "cancel");
         this.status = OrderStatus.CANCELLED;
         this.updatedAt = Instant.now();
     }
 
+    public void markRefundPending() {
+        if (this.status != OrderStatus.CONFIRMED && this.status != OrderStatus.REFUND_PENDING) {
+            throw new IllegalStateException("Cannot mark order " + id + " refund pending from " + status);
+        }
+        this.status = OrderStatus.REFUND_PENDING;
+        this.updatedAt = Instant.now();
+    }
+
     public void refund() {
+        if (this.status != OrderStatus.CONFIRMED && this.status != OrderStatus.REFUND_PENDING) {
+            throw new IllegalStateException("Cannot refund order " + id + " from " + status);
+        }
         this.status = OrderStatus.REFUNDED;
         this.updatedAt = Instant.now();
+    }
+
+    public boolean isPending() {
+        return status == OrderStatus.PENDING;
+    }
+
+    public boolean isAwaitingRefund() {
+        return status == OrderStatus.REFUND_PENDING;
+    }
+
+    private void requireStatus(OrderStatus expected, String action) {
+        if (this.status != expected) {
+            throw new IllegalStateException("Cannot " + action + " order " + id + " from " + status);
+        }
     }
 
     public UUID getId() {
