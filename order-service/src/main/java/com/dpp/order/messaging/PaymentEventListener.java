@@ -36,6 +36,7 @@ public class PaymentEventListener {
         switch (eventType) {
             case EventTypes.PAYMENT_SUCCEEDED -> saga.onPaymentSucceeded(eventId, orderId, correlationId);
             case EventTypes.PAYMENT_FAILED -> saga.onPaymentFailed(eventId, orderId, correlationId);
+            case EventTypes.REFUND_PENDING -> saga.onRefundPending(eventId, orderId, correlationId);
             case EventTypes.REFUND_COMPLETED -> saga.onRefundCompleted(eventId, orderId, correlationId);
             default -> log.debug("Ignoring payment event of type {}", eventType);
         }

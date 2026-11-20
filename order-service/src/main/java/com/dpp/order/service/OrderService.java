@@ -72,6 +72,11 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
+    public OrderResponse getInternal(UUID id) {
+        return OrderResponse.from(requireOrder(id));
+    }
+
+    @Transactional(readOnly = true)
     public Page<OrderResponse> listMine(UUID customerId, Pageable pageable) {
         return orders.findByCustomerId(customerId, pageable).map(OrderResponse::from);
     }
@@ -100,9 +105,26 @@ public class OrderService {
 
         order.cancel();
         orders.save(order);
-        releaseQuietly(order.getId());
+        release(order.getId());
         publisher.orderCancelled(order, correlationId, "cancelled before payment");
         return OrderResponse.from(order);
+    }
+
+    /**
+     * Compensation for an order that never received a verified payment. The
+     * cancellation event tells payment-service to refund a late success.
+     */
+    @Transactional
+    public void expire(UUID id, String correlationId) {
+        Order order = requireOrder(id);
+        if (!order.isPending()) {
+            return;
+        }
+        order.cancel();
+        orders.save(order);
+        release(order.getId());
+        publisher.orderCancelled(order, correlationId, "payment timed out");
+        log.info("Expired unpaid order {}", id);
     }
 
     private ProductView fetchProduct(UUID productId) {
@@ -129,11 +151,14 @@ public class OrderService {
         }
     }
 
-    private void releaseQuietly(UUID orderId) {
+    private void release(UUID orderId) {
         try {
             catalog.release(orderId);
+        } catch (FeignException.NotFound e) {
+            log.warn("No reservation found while releasing order {}", orderId);
         } catch (FeignException e) {
             log.warn("Reservation release failed for order {}: {}", orderId, e.getMessage());
+            throw new ApiException(ErrorCode.SERVICE_UNAVAILABLE, "Catalog service is unavailable");
         }
     }
 

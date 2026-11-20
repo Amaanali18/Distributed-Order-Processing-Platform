@@ -75,10 +75,31 @@ public class OrderSagaService {
         }
 
         releaseReservation(orderId);
-        order.cancel();
+        order.fail();
         orders.save(order);
-        publisher.orderCancelled(order, correlationId, "payment failed");
-        log.info("Order {} cancelled after failed payment", orderId);
+        publisher.orderFailed(order, correlationId, "payment failed");
+        log.info("Order {} failed after failed payment", orderId);
+    }
+
+    @Transactional
+    public void onRefundPending(UUID eventId, UUID orderId, String correlationId) {
+        if (!processedEvents.firstTime(eventId, EventTypes.REFUND_PENDING)) {
+            log.debug("Duplicate RefundPending event {} ignored", eventId);
+            return;
+        }
+        Order order = orders.findById(orderId).orElse(null);
+        if (order == null) {
+            log.warn("RefundPending for unknown order {}", orderId);
+            return;
+        }
+        if (order.getStatus() != OrderStatus.CONFIRMED && order.getStatus() != OrderStatus.REFUND_PENDING) {
+            log.warn("RefundPending for order {} in status {}, ignoring", orderId, order.getStatus());
+            return;
+        }
+
+        order.markRefundPending();
+        orders.save(order);
+        log.info("Order {} marked refund pending", orderId);
     }
 
     @Transactional
@@ -92,7 +113,7 @@ public class OrderSagaService {
             log.warn("RefundCompleted for unknown order {}", orderId);
             return;
         }
-        if (order.getStatus() != OrderStatus.CONFIRMED) {
+        if (order.getStatus() != OrderStatus.CONFIRMED && order.getStatus() != OrderStatus.REFUND_PENDING) {
             log.warn("RefundCompleted for order {} in status {}, ignoring", orderId, order.getStatus());
             return;
         }
