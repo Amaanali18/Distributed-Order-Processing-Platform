@@ -1,0 +1,16 @@
+$kind: http-request
+description: Public endpoint.
+url: "{{base_url}}/auth/refresh"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
+body:
+  type: json
+  content: |-
+    {
+      "refreshToken": "{{refreshToken}}"
+    }
+settings: {}
+examples: ./.resources/Exchange a refresh token for a new token pair.resources/examples
+order: 3000

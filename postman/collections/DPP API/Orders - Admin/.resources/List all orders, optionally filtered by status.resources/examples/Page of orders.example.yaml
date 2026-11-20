@@ -1,0 +1,90 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/admin/orders?status=<string>&page=0&size=20"
+  method: GET
+  headers:
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+    - key: Accept
+      value: application/json
+  queryParams:
+    status: <string>
+    page: "0"
+    size: "20"
+  body:
+    type: text
+    content: ""
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "content": [
+          {
+            "id": "8147120d-24aa-1860-d06e-41b15bed7630",
+            "customerId": "344ef147-b21c-e494-200f-319c0e860568",
+            "customerEmail": "string",
+            "status": "<string>",
+            "totalAmount": 9362.812065519392,
+            "currency": "string",
+            "items": [
+              {
+                "productId": "1b712cec-c02a-36d0-a2f2-053589842766",
+                "sku": "string",
+                "name": "string",
+                "quantity": 9634,
+                "unitPrice": 8963.078532833606
+              },
+              {
+                "productId": "35dbd47a-54e7-92bf-4920-a77c6beaecb4",
+                "sku": "string",
+                "name": "string",
+                "quantity": 1447,
+                "unitPrice": 9611.271983012557
+              }
+            ],
+            "createdAt": "1992-12-20T06:42:24.722Z",
+            "updatedAt": "1987-05-06T00:25:28.383Z"
+          },
+          {
+            "id": "8ae75313-6474-f0a6-b2ec-12fb1f362b53",
+            "customerId": "2c7bf7e9-3ba2-1382-6799-0af8c037e0bb",
+            "customerEmail": "string",
+            "status": "<string>",
+            "totalAmount": 4701.775142457336,
+            "currency": "string",
+            "items": [
+              {
+                "productId": "e605e4f7-8fd6-0bf4-ab36-72b5f982397e",
+                "sku": "string",
+                "name": "string",
+                "quantity": 1427,
+                "unitPrice": 1845.090575516224
+              },
+              {
+                "productId": "6ccf469f-66ab-c2c2-0c1d-ac39c1535bcc",
+                "sku": "string",
+                "name": "string",
+                "quantity": 7358,
+                "unitPrice": 9090.47060413286
+              }
+            ],
+            "createdAt": "2019-11-16T08:34:13.901Z",
+            "updatedAt": "1992-10-06T07:52:45.971Z"
+          }
+        ],
+        "totalElements": 9422,
+        "totalPages": 3493,
+        "number": 3075,
+        "size": 4737,
+        "numberOfElements": 6668,
+        "first": false,
+        "last": true,
+        "empty": true
+      }
+order: 1000

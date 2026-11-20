@@ -1,0 +1,63 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/admin/products?page=0&size=20"
+  method: GET
+  headers:
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+    - key: Accept
+      value: application/json
+  queryParams:
+    page: "0"
+    size: "20"
+  body:
+    type: text
+    content: ""
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "content": [
+          {
+            "id": "d4f0b4f8-22ba-fe4c-517b-d16dde9bdb34",
+            "sku": "string",
+            "name": "string",
+            "price": 2273.863584268838,
+            "currency": "string",
+            "status": "ACTIVE",
+            "totalStock": 423,
+            "reservedStock": 4584,
+            "availableStock": 8723,
+            "createdAt": "1996-10-30T19:47:38.975Z",
+            "description": "string"
+          },
+          {
+            "id": "a4097d98-ef59-fcbe-b8e7-65f7d8351fba",
+            "sku": "string",
+            "name": "string",
+            "price": 5277.3496066220105,
+            "currency": "string",
+            "status": "INACTIVE",
+            "totalStock": 7091,
+            "reservedStock": 8040,
+            "availableStock": 7494,
+            "createdAt": "1965-07-23T19:05:22.352Z",
+            "description": "string"
+          }
+        ],
+        "totalElements": 3343,
+        "totalPages": 8102,
+        "number": 9776,
+        "size": 544,
+        "numberOfElements": 4709,
+        "first": true,
+        "last": false,
+        "empty": true
+      }
+order: 1000

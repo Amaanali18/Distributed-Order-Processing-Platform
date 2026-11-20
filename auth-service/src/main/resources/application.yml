@@ -25,6 +25,9 @@ dpp:
     issuer: ${JWT_ISSUER:dpp-auth}
     access-token-ttl: 15m
     refresh-token-ttl: 7d
+    # RSA private JWK: reused across restarts so previously issued tokens stay valid.
+    jwk-path: ${JWT_JWK_PATH:./keys/auth-jwk.json}
+    generate-if-missing: ${JWT_GENERATE_IF_MISSING:true}
   bootstrap:
     admin-email: ${DPP_BOOTSTRAP_ADMIN_EMAIL:}
     admin-password: ${DPP_BOOTSTRAP_ADMIN_PASSWORD:}
@@ -40,7 +43,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,metrics,prometheus
   endpoint:
     health:
       probes:

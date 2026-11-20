@@ -1,0 +1,9 @@
+$kind: http-request
+description: Served by auth-service on port 8081; not routed through the gateway.
+url: "{{auth_service_url}}/.well-known/jwks.json"
+method: GET
+headers:
+  Accept: application/json
+settings: {}
+examples: ./.resources/Public JWKS used to verify access tokens.resources/examples
+order: 5000

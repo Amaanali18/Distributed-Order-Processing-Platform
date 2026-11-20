@@ -1,0 +1,4 @@
+$kind: collection
+name: Cleanup
+description: Runs after the payment flow so the created order is cancelled only once its payment assertions have completed.
+order: 14000

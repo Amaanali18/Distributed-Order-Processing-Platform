@@ -1,0 +1,6 @@
+$kind: collection
+name: Operations
+description: Gateway health probe.
+order: 13000
+auth:
+  type: noauth

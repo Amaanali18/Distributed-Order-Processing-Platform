@@ -1,0 +1,14 @@
+$kind: http-request
+description: Requires a bearer token with the ADMIN role.
+url: "{{base_url}}/admin/notifications/:id"
+method: GET
+headers:
+  Accept: application/json
+pathVariables:
+  - key: id
+    value: '{{notification_id}}'
+    disabled: false
+    description: "(Required) "
+settings: {}
+examples: ./.resources/Get any notification by id.resources/examples
+order: 2000

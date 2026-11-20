@@ -1,0 +1,14 @@
+$kind: http-request
+description: A customer may query only their own order; an ADMIN may query any order.
+url: "{{base_url}}/payments/by-order/:orderId"
+method: GET
+headers:
+  Accept: application/json
+pathVariables:
+  - key: orderId
+    value: '{{order_id}}'
+    disabled: false
+    description: "(Required) "
+settings: {}
+examples: ./.resources/Find a payment attempt by order id.resources/examples
+order: 4000

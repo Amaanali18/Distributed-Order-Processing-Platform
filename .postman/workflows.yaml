@@ -1,0 +1,6 @@
+workflows:
+  syncSpecToCollection:
+    - spec: ../postman/specs/dpp-api.yaml
+      collection: ../postman/collections/DPP API
+      options:
+        folderStrategy: Tags

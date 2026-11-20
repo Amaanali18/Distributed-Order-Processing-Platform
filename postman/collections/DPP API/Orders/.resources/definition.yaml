@@ -1,0 +1,4 @@
+$kind: collection
+name: Orders
+description: Customer order endpoints using the collection bearer token.
+order: 5000

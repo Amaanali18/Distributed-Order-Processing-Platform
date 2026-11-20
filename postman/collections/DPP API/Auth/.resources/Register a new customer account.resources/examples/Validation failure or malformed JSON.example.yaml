@@ -1,0 +1,45 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/auth/register"
+  method: POST
+  headers:
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+    - key: Accept
+      value: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "email": "ybklF2PV@YmMTFeVnSwCy.jm",
+        "password": "stringstring"
+      }
+response:
+  statusCode: 400
+  statusText: Bad Request
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "timestamp": "1957-09-22T21:36:29.465Z",
+        "status": 8203,
+        "error": "string",
+        "code": "NOT_FOUND",
+        "message": "string",
+        "path": "string",
+        "correlationId": "string",
+        "violations": [
+          {
+            "field": "string",
+            "message": "string"
+          },
+          {
+            "field": "string",
+            "message": "string"
+          }
+        ]
+      }
+order: 2000

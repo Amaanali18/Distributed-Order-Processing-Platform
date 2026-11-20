@@ -1,0 +1,24 @@
+$kind: http-request
+description: |-
+  Requires a bearer token with the ADMIN role. Only SUCCESS payments can
+  be refunded. An omitted amount refunds the full payment amount.
+url: "{{base_url}}/admin/payments/:id/refund"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
+pathVariables:
+  - key: id
+    value: '{{payment_id}}'
+    disabled: false
+    description: "(Required) "
+body:
+  type: json
+  content: |-
+    {
+      "amount": {{payment_amount}},
+      "reason": "Postman collection refund"
+    }
+settings: {}
+examples: ./.resources/Refund a successful payment.resources/examples
+order: 3000

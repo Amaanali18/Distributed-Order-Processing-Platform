@@ -1,0 +1,2086 @@
+﻿{
+    "schemaVersion":  1,
+    "generatedAt":  "2026-10-28T13:15:48.8837752+05:30",
+    "root":  "F:\\IdeaProjects\\Distributed Processing Platform",
+    "scannerStage":  "Stage 1 - deterministic inventory only",
+    "totalFiles":  228,
+    "textCandidates":  221,
+    "excludedFiles":  2,
+    "categoryCounts":  [
+                           {
+                               "category":  "configuration",
+                               "count":  25
+                           },
+                           {
+                               "category":  "database",
+                               "count":  9
+                           },
+                           {
+                               "category":  "documentation",
+                               "count":  8
+                           },
+                           {
+                               "category":  "frontend",
+                               "count":  2
+                           },
+                           {
+                               "category":  "other-text",
+                               "count":  7
+                           },
+                           {
+                               "category":  "project-doc",
+                               "count":  5
+                           },
+                           {
+                               "category":  "script",
+                               "count":  5
+                           },
+                           {
+                               "category":  "source",
+                               "count":  167
+                           }
+                       ],
+    "topLevelEntries":  [
+                            {
+                                "name":  ".git",
+                                "type":  "directory"
+                            },
+                            {
+                                "name":  ".idea",
+                                "type":  "directory"
+                            },
+                            {
+                                "name":  ".mvn",
+                                "type":  "directory"
+                            },
+                            {
+                                "name":  ".postman",
+                                "type":  "directory"
+                            },
+                            {
+                                "name":  "api-gateway",
+                                "type":  "directory"
+                            },
+                            {
+                                "name":  "auth-service",
+                                "type":  "directory"
+                            },
+                            {
+                                "name":  "catalog-service",
+                                "type":  "directory"
+                            },
+                            {
+                                "name":  "discovery-server",
+                                "type":  "directory"
+                            },
+                            {
+                                "name":  "docs",
+                                "type":  "directory"
+                            },
+                            {
+                                "name":  "frontend",
+                                "type":  "directory"
+                            },
+                            {
+                                "name":  "infra",
+                                "type":  "directory"
+                            },
+                            {
+                                "name":  "logs",
+                                "type":  "directory"
+                            },
+                            {
+                                "name":  "notification-service",
+                                "type":  "directory"
+                            },
+                            {
+                                "name":  "order-service",
+                                "type":  "directory"
+                            },
+                            {
+                                "name":  "payment-service",
+                                "type":  "directory"
+                            },
+                            {
+                                "name":  "platform-common",
+                                "type":  "directory"
+                            },
+                            {
+                                "name":  "platform-messaging",
+                                "type":  "directory"
+                            },
+                            {
+                                "name":  "platform-testing",
+                                "type":  "directory"
+                            },
+                            {
+                                "name":  "postman",
+                                "type":  "directory"
+                            },
+                            {
+                                "name":  ".editorconfig",
+                                "type":  "file"
+                            },
+                            {
+                                "name":  ".env.example",
+                                "type":  "file"
+                            },
+                            {
+                                "name":  ".gitignore",
+                                "type":  "file"
+                            },
+                            {
+                                "name":  "AGENTS.md",
+                                "type":  "file"
+                            },
+                            {
+                                "name":  "mvnw",
+                                "type":  "file"
+                            },
+                            {
+                                "name":  "mvnw.cmd",
+                                "type":  "file"
+                            },
+                            {
+                                "name":  "pom.xml",
+                                "type":  "file"
+                            },
+                            {
+                                "name":  "PRD.md",
+                                "type":  "file"
+                            },
+                            {
+                                "name":  "README.md",
+                                "type":  "file"
+                            }
+                        ],
+    "manifests":  [
+                      {
+                          "path":  "AGENTS.md",
+                          "bytes":  374,
+                          "category":  "project-doc"
+                      },
+                      {
+                          "path":  "api-gateway/pom.xml",
+                          "bytes":  2297,
+                          "category":  "configuration"
+                      },
+                      {
+                          "path":  "auth-service/pom.xml",
+                          "bytes":  3382,
+                          "category":  "configuration"
+                      },
+                      {
+                          "path":  "catalog-service/pom.xml",
+                          "bytes":  3382,
+                          "category":  "configuration"
+                      },
+                      {
+                          "path":  "discovery-server/pom.xml",
+                          "bytes":  1408,
+                          "category":  "configuration"
+                      },
+                      {
+                          "path":  "docs/architecture/README.md",
+                          "bytes":  2963,
+                          "category":  "project-doc"
+                      },
+                      {
+                          "path":  "frontend/package.json",
+                          "bytes":  459,
+                          "category":  "configuration"
+                      },
+                      {
+                          "path":  "frontend/README.md",
+                          "bytes":  1009,
+                          "category":  "project-doc"
+                      },
+                      {
+                          "path":  "infra/docker-compose.yml",
+                          "bytes":  1996,
+                          "category":  "configuration"
+                      },
+                      {
+                          "path":  "notification-service/pom.xml",
+                          "bytes":  3708,
+                          "category":  "configuration"
+                      },
+                      {
+                          "path":  "order-service/pom.xml",
+                          "bytes":  4035,
+                          "category":  "configuration"
+                      },
+                      {
+                          "path":  "payment-service/pom.xml",
+                          "bytes":  3713,
+                          "category":  "configuration"
+                      },
+                      {
+                          "path":  "platform-common/pom.xml",
+                          "bytes":  1680,
+                          "category":  "configuration"
+                      },
+                      {
+                          "path":  "platform-messaging/pom.xml",
+                          "bytes":  1984,
+                          "category":  "configuration"
+                      },
+                      {
+                          "path":  "platform-testing/pom.xml",
+                          "bytes":  1248,
+                          "category":  "configuration"
+                      },
+                      {
+                          "path":  "pom.xml",
+                          "bytes":  3800,
+                          "category":  "configuration"
+                      },
+                      {
+                          "path":  "PRD.md",
+                          "bytes":  15332,
+                          "category":  "project-doc"
+                      },
+                      {
+                          "path":  "README.md",
+                          "bytes":  3070,
+                          "category":  "project-doc"
+                      }
+                  ],
+    "gitSummary":  "Branch: master\nChanged/untracked entries: 68\nGit status:\n M README.md\n M api-gateway/src/main/resources/application.yml\n M catalog-service/src/main/java/com/dpp/catalog/CatalogApplication.java\n M catalog-service/src/main/java/com/dpp/catalog/repository/ReservationRepository.java\n M catalog-service/src/main/java/com/dpp/catalog/service/InventoryService.java\n M catalog-service/src/main/resources/application.yml\n M catalog-service/src/test/java/com/dpp/catalog/InventoryServiceIntegrationTest.java\n M frontend/src/App.jsx\n M frontend/src/index.css\n M frontend/vite.config.js\n M infra/scripts/smoke-p2.ps1\n M infra/scripts/start-local-stack.ps1\n M notification-service/src/main/java/com/dpp/notification/service/NotificationRenderer.java\n M notification-service/src/main/java/com/dpp/notification/service/NotificationService.java\n M notification-service/src/test/java/com/dpp/notification/NotificationServiceIntegrationTest.java\n M order-service/pom.xml\n M order-service/src/main/java/com/dpp/order/domain/Order.java\n M order-service/src/main/java/com/dpp/order/domain/OrderStatus.java\n M order-service/src/main/java/com/dpp/order/messaging/OrderEventPublisher.java\n M order-service/src/main/java/com/dpp/order/messaging/PaymentEventListener.java\n M order-service/src/main/java/com/dpp/order/service/OrderSagaService.java\n M order-service/src/main/resources/application.yml\n M order-service/src/test/java/com/dpp/order/OrderServiceIntegrationTest.java\n M payment-service/pom.xml\n M payment-service/src/main/java/com/dpp/payment/config/PaymentProperties.java\n M payment-service/src/main/java/com/dpp/payment/config/ProviderConfiguration.java\n M payment-service/src/main/java/com/dpp/payment/domain/PaymentAttempt.java\n M payment-service/src/main/java/com/dpp/payment/domain/PaymentStatus.java\n M payment-service/src/main/java/com/dpp/payment/domain/Refund.java\n M payment-service/src/main/java/com/dpp/payment/domain/RefundStatus.java\n M payment-service/src/main/java/com/dpp/payment/messaging/OrderEventListener.java\n M payment-service/src/main/java/com/dpp/payment/messaging/PaymentEventPublisher.java\n M payment-service/src/main/java/com/dpp/payment/provider/PaymentProvider.java\n M payment-service/src/main/java/com/dpp/payment/provider/ProviderRefundStatus.java\n M payment-service/src/main/java/com/dpp/payment/provider/SimulatedPaymentProvider.java\n M payment-service/src/main/java/com/dpp/payment/provider/StripePaymentProvider.java\n M payment-service/src/main/java/com/dpp/payment/repository/PaymentAttemptRepository.java\n M payment-service/src/main/java/com/dpp/payment/repository/RefundRepository.java\n M payment-service/src/main/java/com/dpp/payment/service/PaymentReconciliationJob.java\n M payment-service/src/main/java/com/dpp/payment/service/PaymentService.java\n M payment-service/src/main/resources/application.yml\n M payment-service/src/test/java/com/dpp/payment/PaymentApiSecurityIntegrationTest.java\n M payment-service/src/test/java/com/dpp/payment/PaymentServiceIntegrationTest.java\n M platform-common/src/main/java/com/dpp/common/event/EventTypes.java\n M platform-messaging/src/main/java/com/dpp/messaging/OutboxRelay.java\n?? .editorconfig\n?? .env.example\n?? .gitignore\n?? .mvn/\n?? .postman/\n?? AGENTS.md\n?? PRD.md\n?? catalog-service/src/main/java/com/dpp/catalog/service/ReservationExpiryJob.java\n?? catalog-service/src/main/resources/db/migration/V1_1__reservation_expiry_index.sql\n?? docs/\n?? frontend/src/api.js\n?? frontend/src/components/\n?? infra/scripts/smoke-p3.ps1\n?? mvnw\n?? order-service/src/main/resources/db/migration/V1_1__order_history_indexes.sql\n?? order-service/src/test/java/com/dpp/order/OutboxRelayIntegrationTest.java\n?? payment-service/src/main/java/com/dpp/payment/domain/PaymentTransition.java\n?? payment-service/src/main/java/com/dpp/payment/provider/ResilientPaymentProvider.java\n?? payment-service/src/main/java/com/dpp/payment/repository/PaymentTransitionRepository.java\n?? payment-service/src/main/resources/db/migration/V1_1__align_payment_status_and_audit.sql\n?? payment-service/src/test/java/com/dpp/payment/PaymentRefundPendingIntegrationTest.java\n?? payment-service/src/test/java/com/dpp/payment/provider/\n?? postman/\nRecent commits:\nd42702b Added Order Service Code Files\n69a888c Added platform related workload source files\ne4255ea Added source code for notification service\n1c489f4 Initial Frontend Setup\n5bcefae Adding dependency file",
+    "files":  [
+                  {
+                      "path":  ".editorconfig",
+                      "name":  ".editorconfig",
+                      "extension":  ".editorconfig",
+                      "bytes":  296,
+                      "category":  "other-text",
+                      "textCandidate":  false
+                  },
+                  {
+                      "path":  ".gitignore",
+                      "name":  ".gitignore",
+                      "extension":  ".gitignore",
+                      "bytes":  426,
+                      "category":  "other-text",
+                      "textCandidate":  false
+                  },
+                  {
+                      "path":  ".mvn/wrapper/maven-wrapper.properties",
+                      "name":  "maven-wrapper.properties",
+                      "extension":  ".properties",
+                      "bytes":  277,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  ".postman/resources.yaml",
+                      "name":  "resources.yaml",
+                      "extension":  ".yaml",
+                      "bytes":  75,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  ".postman/skills.json",
+                      "name":  "skills.json",
+                      "extension":  ".json",
+                      "bytes":  627,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "AGENTS.md",
+                      "name":  "AGENTS.md",
+                      "extension":  ".md",
+                      "bytes":  374,
+                      "category":  "project-doc",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "api-gateway/pom.xml",
+                      "name":  "pom.xml",
+                      "extension":  ".xml",
+                      "bytes":  2297,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "api-gateway/src/main/java/com/dpp/gateway/ApiGatewayApplication.java",
+                      "name":  "ApiGatewayApplication.java",
+                      "extension":  ".java",
+                      "bytes":  327,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "api-gateway/src/main/java/com/dpp/gateway/config/SecurityConfiguration.java",
+                      "name":  "SecurityConfiguration.java",
+                      "extension":  ".java",
+                      "bytes":  2931,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "api-gateway/src/main/java/com/dpp/gateway/filter/CorrelationIdGlobalFilter.java",
+                      "name":  "CorrelationIdGlobalFilter.java",
+                      "extension":  ".java",
+                      "bytes":  1347,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "api-gateway/src/main/resources/application.yml",
+                      "name":  "application.yml",
+                      "extension":  ".yml",
+                      "bytes":  1884,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/pom.xml",
+                      "name":  "pom.xml",
+                      "extension":  ".xml",
+                      "bytes":  3382,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/java/com/dpp/auth/AuthServiceApplication.java",
+                      "name":  "AuthServiceApplication.java",
+                      "extension":  ".java",
+                      "bytes":  435,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/java/com/dpp/auth/bootstrap/AdminBootstrap.java",
+                      "name":  "AdminBootstrap.java",
+                      "extension":  ".java",
+                      "bytes":  2023,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/java/com/dpp/auth/config/JwtConfiguration.java",
+                      "name":  "JwtConfiguration.java",
+                      "extension":  ".java",
+                      "bytes":  1735,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/java/com/dpp/auth/config/JwtProperties.java",
+                      "name":  "JwtProperties.java",
+                      "extension":  ".java",
+                      "bytes":  303,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/java/com/dpp/auth/config/SecurityConfiguration.java",
+                      "name":  "SecurityConfiguration.java",
+                      "extension":  ".java",
+                      "bytes":  1811,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/java/com/dpp/auth/domain/RefreshToken.java",
+                      "name":  "RefreshToken.java",
+                      "extension":  ".java",
+                      "bytes":  1791,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/java/com/dpp/auth/domain/User.java",
+                      "name":  "User.java",
+                      "extension":  ".java",
+                      "bytes":  2283,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/java/com/dpp/auth/domain/UserStatus.java",
+                      "name":  "UserStatus.java",
+                      "extension":  ".java",
+                      "bytes":  82,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/java/com/dpp/auth/repository/RefreshTokenRepository.java",
+                      "name":  "RefreshTokenRepository.java",
+                      "extension":  ".java",
+                      "bytes":  330,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/java/com/dpp/auth/repository/UserRepository.java",
+                      "name":  "UserRepository.java",
+                      "extension":  ".java",
+                      "bytes":  360,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/java/com/dpp/auth/service/AuthService.java",
+                      "name":  "AuthService.java",
+                      "extension":  ".java",
+                      "bytes":  3792,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/java/com/dpp/auth/service/TokenService.java",
+                      "name":  "TokenService.java",
+                      "extension":  ".java",
+                      "bytes":  1932,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/java/com/dpp/auth/web/AuthController.java",
+                      "name":  "AuthController.java",
+                      "extension":  ".java",
+                      "bytes":  1783,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/java/com/dpp/auth/web/dto/LoginRequest.java",
+                      "name":  "LoginRequest.java",
+                      "extension":  ".java",
+                      "bytes":  179,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/java/com/dpp/auth/web/dto/RefreshRequest.java",
+                      "name":  "RefreshRequest.java",
+                      "extension":  ".java",
+                      "bytes":  144,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/java/com/dpp/auth/web/dto/RegisterRequest.java",
+                      "name":  "RegisterRequest.java",
+                      "extension":  ".java",
+                      "bytes":  320,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/java/com/dpp/auth/web/dto/TokenResponse.java",
+                      "name":  "TokenResponse.java",
+                      "extension":  ".java",
+                      "bytes":  354,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/java/com/dpp/auth/web/dto/UserResponse.java",
+                      "name":  "UserResponse.java",
+                      "extension":  ".java",
+                      "bytes":  321,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/java/com/dpp/auth/web/JwksController.java",
+                      "name":  "JwksController.java",
+                      "extension":  ".java",
+                      "bytes":  562,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/resources/application.yml",
+                      "name":  "application.yml",
+                      "extension":  ".yml",
+                      "bytes":  978,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/main/resources/db/migration/V1_0__create_auth_schema.sql",
+                      "name":  "V1_0__create_auth_schema.sql",
+                      "extension":  ".sql",
+                      "bytes":  747,
+                      "category":  "database",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/test/java/com/dpp/auth/AdminBootstrapIntegrationTest.java",
+                      "name":  "AdminBootstrapIntegrationTest.java",
+                      "extension":  ".java",
+                      "bytes":  1260,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/test/java/com/dpp/auth/AuthApiIntegrationTest.java",
+                      "name":  "AuthApiIntegrationTest.java",
+                      "extension":  ".java",
+                      "bytes":  5118,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "auth-service/src/test/java/com/dpp/auth/AuthServiceIntegrationTest.java",
+                      "name":  "AuthServiceIntegrationTest.java",
+                      "extension":  ".java",
+                      "bytes":  5448,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/pom.xml",
+                      "name":  "pom.xml",
+                      "extension":  ".xml",
+                      "bytes":  3382,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/CatalogApplication.java",
+                      "name":  "CatalogApplication.java",
+                      "extension":  ".java",
+                      "bytes":  406,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/config/InternalServiceTokenFilter.java",
+                      "name":  "InternalServiceTokenFilter.java",
+                      "extension":  ".java",
+                      "bytes":  1665,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/config/SecurityConfiguration.java",
+                      "name":  "SecurityConfiguration.java",
+                      "extension":  ".java",
+                      "bytes":  3033,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/domain/Product.java",
+                      "name":  "Product.java",
+                      "extension":  ".java",
+                      "bytes":  3862,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/domain/ProductStatus.java",
+                      "name":  "ProductStatus.java",
+                      "extension":  ".java",
+                      "bytes":  88,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/domain/Reservation.java",
+                      "name":  "Reservation.java",
+                      "extension":  ".java",
+                      "bytes":  3351,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/domain/ReservationStatus.java",
+                      "name":  "ReservationStatus.java",
+                      "extension":  ".java",
+                      "bytes":  105,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/repository/ProductRepository.java",
+                      "name":  "ProductRepository.java",
+                      "extension":  ".java",
+                      "bytes":  2209,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/repository/ReservationRepository.java",
+                      "name":  "ReservationRepository.java",
+                      "extension":  ".java",
+                      "bytes":  598,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/service/InventoryService.java",
+                      "name":  "InventoryService.java",
+                      "extension":  ".java",
+                      "bytes":  5475,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/service/ProductService.java",
+                      "name":  "ProductService.java",
+                      "extension":  ".java",
+                      "bytes":  3489,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/service/ReservationExpiryJob.java",
+                      "name":  "ReservationExpiryJob.java",
+                      "extension":  ".java",
+                      "bytes":  944,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/web/AdminProductController.java",
+                      "name":  "AdminProductController.java",
+                      "extension":  ".java",
+                      "bytes":  2247,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/web/dto/ProductRequest.java",
+                      "name":  "ProductRequest.java",
+                      "extension":  ".java",
+                      "bytes":  634,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/web/dto/ProductResponse.java",
+                      "name":  "ProductResponse.java",
+                      "extension":  ".java",
+                      "bytes":  1034,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/web/dto/ReservationRequest.java",
+                      "name":  "ReservationRequest.java",
+                      "extension":  ".java",
+                      "bytes":  497,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/web/dto/ReservationResponse.java",
+                      "name":  "ReservationResponse.java",
+                      "extension":  ".java",
+                      "bytes":  898,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/web/dto/RestockRequest.java",
+                      "name":  "RestockRequest.java",
+                      "extension":  ".java",
+                      "bytes":  189,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/web/dto/StatusRequest.java",
+                      "name":  "StatusRequest.java",
+                      "extension":  ".java",
+                      "bytes":  190,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/web/InventoryController.java",
+                      "name":  "InventoryController.java",
+                      "extension":  ".java",
+                      "bytes":  1713,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/java/com/dpp/catalog/web/ProductController.java",
+                      "name":  "ProductController.java",
+                      "extension":  ".java",
+                      "bytes":  1263,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/resources/application.yml",
+                      "name":  "application.yml",
+                      "extension":  ".yml",
+                      "bytes":  1100,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/resources/db/migration/V1_0__create_catalog_schema.sql",
+                      "name":  "V1_0__create_catalog_schema.sql",
+                      "extension":  ".sql",
+                      "bytes":  1327,
+                      "category":  "database",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/main/resources/db/migration/V1_1__reservation_expiry_index.sql",
+                      "name":  "V1_1__reservation_expiry_index.sql",
+                      "extension":  ".sql",
+                      "bytes":  87,
+                      "category":  "database",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/test/java/com/dpp/catalog/CatalogApiSecurityIntegrationTest.java",
+                      "name":  "CatalogApiSecurityIntegrationTest.java",
+                      "extension":  ".java",
+                      "bytes":  3265,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/test/java/com/dpp/catalog/InventoryServiceIntegrationTest.java",
+                      "name":  "InventoryServiceIntegrationTest.java",
+                      "extension":  ".java",
+                      "bytes":  6029,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "catalog-service/src/test/java/com/dpp/catalog/ProductServiceIntegrationTest.java",
+                      "name":  "ProductServiceIntegrationTest.java",
+                      "extension":  ".java",
+                      "bytes":  3794,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "discovery-server/pom.xml",
+                      "name":  "pom.xml",
+                      "extension":  ".xml",
+                      "bytes":  1408,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "discovery-server/src/main/java/com/dpp/discovery/DiscoveryServerApplication.java",
+                      "name":  "DiscoveryServerApplication.java",
+                      "extension":  ".java",
+                      "bytes":  434,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "discovery-server/src/main/resources/application.yml",
+                      "name":  "application.yml",
+                      "extension":  ".yml",
+                      "bytes":  355,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "docs/adr/0001-maven-multimodule-monorepo.md",
+                      "name":  "0001-maven-multimodule-monorepo.md",
+                      "extension":  ".md",
+                      "bytes":  1051,
+                      "category":  "documentation",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "docs/adr/0002-database-per-service.md",
+                      "name":  "0002-database-per-service.md",
+                      "extension":  ".md",
+                      "bytes":  1026,
+                      "category":  "documentation",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "docs/adr/0003-transactional-outbox.md",
+                      "name":  "0003-transactional-outbox.md",
+                      "extension":  ".md",
+                      "bytes":  1076,
+                      "category":  "documentation",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "docs/adr/0004-java21-springboot35.md",
+                      "name":  "0004-java21-springboot35.md",
+                      "extension":  ".md",
+                      "bytes":  1018,
+                      "category":  "documentation",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "docs/adr/0005-payment-provider-adapter.md",
+                      "name":  "0005-payment-provider-adapter.md",
+                      "extension":  ".md",
+                      "bytes":  1044,
+                      "category":  "documentation",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "docs/architecture/conventions.md",
+                      "name":  "conventions.md",
+                      "extension":  ".md",
+                      "bytes":  5233,
+                      "category":  "documentation",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "docs/architecture/README.md",
+                      "name":  "README.md",
+                      "extension":  ".md",
+                      "bytes":  2963,
+                      "category":  "project-doc",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "frontend/.gitignore",
+                      "name":  ".gitignore",
+                      "extension":  ".gitignore",
+                      "bytes":  253,
+                      "category":  "other-text",
+                      "textCandidate":  false
+                  },
+                  {
+                      "path":  "frontend/.oxlintrc.json",
+                      "name":  ".oxlintrc.json",
+                      "extension":  ".json",
+                      "bytes":  231,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "frontend/index.html",
+                      "name":  "index.html",
+                      "extension":  ".html",
+                      "bytes":  392,
+                      "category":  "frontend",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "frontend/package.json",
+                      "name":  "package.json",
+                      "extension":  ".json",
+                      "bytes":  459,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "frontend/package-lock.json",
+                      "name":  "package-lock.json",
+                      "extension":  ".json",
+                      "bytes":  40254,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "frontend/public/favicon.svg",
+                      "name":  "favicon.svg",
+                      "extension":  ".svg",
+                      "bytes":  9522,
+                      "category":  "other-text",
+                      "textCandidate":  false
+                  },
+                  {
+                      "path":  "frontend/README.md",
+                      "name":  "README.md",
+                      "extension":  ".md",
+                      "bytes":  1009,
+                      "category":  "project-doc",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "frontend/src/api.js",
+                      "name":  "api.js",
+                      "extension":  ".js",
+                      "bytes":  3636,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "frontend/src/App.jsx",
+                      "name":  "App.jsx",
+                      "extension":  ".jsx",
+                      "bytes":  5109,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "frontend/src/components/Cart.jsx",
+                      "name":  "Cart.jsx",
+                      "extension":  ".jsx",
+                      "bytes":  2130,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "frontend/src/components/Login.jsx",
+                      "name":  "Login.jsx",
+                      "extension":  ".jsx",
+                      "bytes":  2453,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "frontend/src/components/Notifications.jsx",
+                      "name":  "Notifications.jsx",
+                      "extension":  ".jsx",
+                      "bytes":  1734,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "frontend/src/components/Orders.jsx",
+                      "name":  "Orders.jsx",
+                      "extension":  ".jsx",
+                      "bytes":  3423,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "frontend/src/components/Products.jsx",
+                      "name":  "Products.jsx",
+                      "extension":  ".jsx",
+                      "bytes":  1755,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "frontend/src/index.css",
+                      "name":  "index.css",
+                      "extension":  ".css",
+                      "bytes":  4038,
+                      "category":  "frontend",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "frontend/src/main.jsx",
+                      "name":  "main.jsx",
+                      "extension":  ".jsx",
+                      "bytes":  229,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "frontend/vite.config.js",
+                      "name":  "vite.config.js",
+                      "extension":  ".js",
+                      "bytes":  396,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "infra/docker-compose.yml",
+                      "name":  "docker-compose.yml",
+                      "extension":  ".yml",
+                      "bytes":  1996,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "infra/postgres/init/01-create-databases.sql",
+                      "name":  "01-create-databases.sql",
+                      "extension":  ".sql",
+                      "bytes":  148,
+                      "category":  "database",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "infra/scripts/smoke-p2.ps1",
+                      "name":  "smoke-p2.ps1",
+                      "extension":  ".ps1",
+                      "bytes":  6709,
+                      "category":  "script",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "infra/scripts/smoke-p3.ps1",
+                      "name":  "smoke-p3.ps1",
+                      "extension":  ".ps1",
+                      "bytes":  6761,
+                      "category":  "script",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "infra/scripts/start-local-stack.ps1",
+                      "name":  "start-local-stack.ps1",
+                      "extension":  ".ps1",
+                      "bytes":  3996,
+                      "category":  "script",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "infra/scripts/stop-local-stack.ps1",
+                      "name":  "stop-local-stack.ps1",
+                      "extension":  ".ps1",
+                      "bytes":  489,
+                      "category":  "script",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "mvnw",
+                      "name":  "mvnw",
+                      "extension":  "",
+                      "bytes":  11172,
+                      "category":  "other-text",
+                      "textCandidate":  false
+                  },
+                  {
+                      "path":  "mvnw.cmd",
+                      "name":  "mvnw.cmd",
+                      "extension":  ".cmd",
+                      "bytes":  7903,
+                      "category":  "script",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/pom.xml",
+                      "name":  "pom.xml",
+                      "extension":  ".xml",
+                      "bytes":  3708,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/java/com/dpp/notification/config/SecurityConfiguration.java",
+                      "name":  "SecurityConfiguration.java",
+                      "extension":  ".java",
+                      "bytes":  2478,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/java/com/dpp/notification/config/SenderConfiguration.java",
+                      "name":  "SenderConfiguration.java",
+                      "extension":  ".java",
+                      "bytes":  1192,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/java/com/dpp/notification/domain/Notification.java",
+                      "name":  "Notification.java",
+                      "extension":  ".java",
+                      "bytes":  4004,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/java/com/dpp/notification/domain/NotificationRecipient.java",
+                      "name":  "NotificationRecipient.java",
+                      "extension":  ".java",
+                      "bytes":  1499,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/java/com/dpp/notification/domain/NotificationStatus.java",
+                      "name":  "NotificationStatus.java",
+                      "extension":  ".java",
+                      "bytes":  107,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/java/com/dpp/notification/messaging/NotificationEventListener.java",
+                      "name":  "NotificationEventListener.java",
+                      "extension":  ".java",
+                      "bytes":  1812,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/java/com/dpp/notification/NotificationApplication.java",
+                      "name":  "NotificationApplication.java",
+                      "extension":  ".java",
+                      "bytes":  336,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/java/com/dpp/notification/repository/NotificationRecipientRepository.java",
+                      "name":  "NotificationRecipientRepository.java",
+                      "extension":  ".java",
+                      "bytes":  291,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/java/com/dpp/notification/repository/NotificationRepository.java",
+                      "name":  "NotificationRepository.java",
+                      "extension":  ".java",
+                      "bytes":  659,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/java/com/dpp/notification/sender/LoggingNotificationSender.java",
+                      "name":  "LoggingNotificationSender.java",
+                      "extension":  ".java",
+                      "bytes":  669,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/java/com/dpp/notification/sender/NotificationSender.java",
+                      "name":  "NotificationSender.java",
+                      "extension":  ".java",
+                      "bytes":  194,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/java/com/dpp/notification/sender/SmtpNotificationSender.java",
+                      "name":  "SmtpNotificationSender.java",
+                      "extension":  ".java",
+                      "bytes":  1383,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/java/com/dpp/notification/service/NotificationQueryService.java",
+                      "name":  "NotificationQueryService.java",
+                      "extension":  ".java",
+                      "bytes":  1794,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/java/com/dpp/notification/service/NotificationRenderer.java",
+                      "name":  "NotificationRenderer.java",
+                      "extension":  ".java",
+                      "bytes":  3217,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/java/com/dpp/notification/service/NotificationService.java",
+                      "name":  "NotificationService.java",
+                      "extension":  ".java",
+                      "bytes":  5292,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/java/com/dpp/notification/web/AdminNotificationController.java",
+                      "name":  "AdminNotificationController.java",
+                      "extension":  ".java",
+                      "bytes":  1494,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/java/com/dpp/notification/web/CurrentUser.java",
+                      "name":  "CurrentUser.java",
+                      "extension":  ".java",
+                      "bytes":  514,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/java/com/dpp/notification/web/dto/NotificationResponse.java",
+                      "name":  "NotificationResponse.java",
+                      "extension":  ".java",
+                      "bytes":  1237,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/java/com/dpp/notification/web/NotificationController.java",
+                      "name":  "NotificationController.java",
+                      "extension":  ".java",
+                      "bytes":  1328,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/resources/application.yml",
+                      "name":  "application.yml",
+                      "extension":  ".yml",
+                      "bytes":  1613,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/main/resources/db/migration/V1_0__create_notifications_schema.sql",
+                      "name":  "V1_0__create_notifications_schema.sql",
+                      "extension":  ".sql",
+                      "bytes":  1606,
+                      "category":  "database",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/test/java/com/dpp/notification/NotificationApiSecurityIntegrationTest.java",
+                      "name":  "NotificationApiSecurityIntegrationTest.java",
+                      "extension":  ".java",
+                      "bytes":  4578,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "notification-service/src/test/java/com/dpp/notification/NotificationServiceIntegrationTest.java",
+                      "name":  "NotificationServiceIntegrationTest.java",
+                      "extension":  ".java",
+                      "bytes":  8373,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/pom.xml",
+                      "name":  "pom.xml",
+                      "extension":  ".xml",
+                      "bytes":  4035,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/java/com/dpp/order/client/CatalogClient.java",
+                      "name":  "CatalogClient.java",
+                      "extension":  ".java",
+                      "bytes":  1061,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/java/com/dpp/order/client/dto/ProductView.java",
+                      "name":  "ProductView.java",
+                      "extension":  ".java",
+                      "bytes":  279,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/java/com/dpp/order/client/dto/ReservationCommand.java",
+                      "name":  "ReservationCommand.java",
+                      "extension":  ".java",
+                      "bytes":  283,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/java/com/dpp/order/client/dto/ReservationView.java",
+                      "name":  "ReservationView.java",
+                      "extension":  ".java",
+                      "bytes":  320,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/java/com/dpp/order/config/FeignConfiguration.java",
+                      "name":  "FeignConfiguration.java",
+                      "extension":  ".java",
+                      "bytes":  694,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/java/com/dpp/order/config/SecurityConfiguration.java",
+                      "name":  "SecurityConfiguration.java",
+                      "extension":  ".java",
+                      "bytes":  2471,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/java/com/dpp/order/domain/Order.java",
+                      "name":  "Order.java",
+                      "extension":  ".java",
+                      "bytes":  6051,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/java/com/dpp/order/domain/OrderStatus.java",
+                      "name":  "OrderStatus.java",
+                      "extension":  ".java",
+                      "bytes":  147,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/java/com/dpp/order/messaging/OrderEventPublisher.java",
+                      "name":  "OrderEventPublisher.java",
+                      "extension":  ".java",
+                      "bytes":  2391,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/java/com/dpp/order/messaging/PaymentEventListener.java",
+                      "name":  "PaymentEventListener.java",
+                      "extension":  ".java",
+                      "bytes":  2051,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/java/com/dpp/order/OrderApplication.java",
+                      "name":  "OrderApplication.java",
+                      "extension":  ".java",
+                      "bytes":  398,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/java/com/dpp/order/repository/OrderRepository.java",
+                      "name":  "OrderRepository.java",
+                      "extension":  ".java",
+                      "bytes":  505,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/java/com/dpp/order/service/OrderSagaService.java",
+                      "name":  "OrderSagaService.java",
+                      "extension":  ".java",
+                      "bytes":  5277,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/java/com/dpp/order/service/OrderService.java",
+                      "name":  "OrderService.java",
+                      "extension":  ".java",
+                      "bytes":  6208,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/java/com/dpp/order/web/AdminOrderController.java",
+                      "name":  "AdminOrderController.java",
+                      "extension":  ".java",
+                      "bytes":  1325,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/java/com/dpp/order/web/CurrentUser.java",
+                      "name":  "CurrentUser.java",
+                      "extension":  ".java",
+                      "bytes":  653,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/java/com/dpp/order/web/dto/CreateOrderRequest.java",
+                      "name":  "CreateOrderRequest.java",
+                      "extension":  ".java",
+                      "bytes":  411,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/java/com/dpp/order/web/dto/OrderResponse.java",
+                      "name":  "OrderResponse.java",
+                      "extension":  ".java",
+                      "bytes":  1243,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/java/com/dpp/order/web/OrderController.java",
+                      "name":  "OrderController.java",
+                      "extension":  ".java",
+                      "bytes":  2159,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/resources/application.yml",
+                      "name":  "application.yml",
+                      "extension":  ".yml",
+                      "bytes":  2748,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/resources/db/migration/V1_0__create_orders_schema.sql",
+                      "name":  "V1_0__create_orders_schema.sql",
+                      "extension":  ".sql",
+                      "bytes":  1546,
+                      "category":  "database",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/main/resources/db/migration/V1_1__order_history_indexes.sql",
+                      "name":  "V1_1__order_history_indexes.sql",
+                      "extension":  ".sql",
+                      "bytes":  168,
+                      "category":  "database",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/test/java/com/dpp/order/OrderApiSecurityIntegrationTest.java",
+                      "name":  "OrderApiSecurityIntegrationTest.java",
+                      "extension":  ".java",
+                      "bytes":  6279,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/test/java/com/dpp/order/OrderServiceIntegrationTest.java",
+                      "name":  "OrderServiceIntegrationTest.java",
+                      "extension":  ".java",
+                      "bytes":  7055,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "order-service/src/test/java/com/dpp/order/OutboxRelayIntegrationTest.java",
+                      "name":  "OutboxRelayIntegrationTest.java",
+                      "extension":  ".java",
+                      "bytes":  3462,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/pom.xml",
+                      "name":  "pom.xml",
+                      "extension":  ".xml",
+                      "bytes":  3713,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/config/PaymentProperties.java",
+                      "name":  "PaymentProperties.java",
+                      "extension":  ".java",
+                      "bytes":  3564,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/config/ProviderConfiguration.java",
+                      "name":  "ProviderConfiguration.java",
+                      "extension":  ".java",
+                      "bytes":  3765,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/config/SecurityConfiguration.java",
+                      "name":  "SecurityConfiguration.java",
+                      "extension":  ".java",
+                      "bytes":  2542,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/domain/PaymentAttempt.java",
+                      "name":  "PaymentAttempt.java",
+                      "extension":  ".java",
+                      "bytes":  5179,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/domain/PaymentStatus.java",
+                      "name":  "PaymentStatus.java",
+                      "extension":  ".java",
+                      "bytes":  134,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/domain/PaymentTransition.java",
+                      "name":  "PaymentTransition.java",
+                      "extension":  ".java",
+                      "bytes":  2083,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/domain/Refund.java",
+                      "name":  "Refund.java",
+                      "extension":  ".java",
+                      "bytes":  3452,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/domain/RefundStatus.java",
+                      "name":  "RefundStatus.java",
+                      "extension":  ".java",
+                      "bytes":  101,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/messaging/OrderEventListener.java",
+                      "name":  "OrderEventListener.java",
+                      "extension":  ".java",
+                      "bytes":  1837,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/messaging/PaymentEventPublisher.java",
+                      "name":  "PaymentEventPublisher.java",
+                      "extension":  ".java",
+                      "bytes":  2621,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/PaymentApplication.java",
+                      "name":  "PaymentApplication.java",
+                      "extension":  ".java",
+                      "bytes":  430,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/provider/ConfirmPaymentCommand.java",
+                      "name":  "ConfirmPaymentCommand.java",
+                      "extension":  ".java",
+                      "bytes":  142,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/provider/CreatePaymentCommand.java",
+                      "name":  "CreatePaymentCommand.java",
+                      "extension":  ".java",
+                      "bytes":  258,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/provider/CreateRefundCommand.java",
+                      "name":  "CreateRefundCommand.java",
+                      "extension":  ".java",
+                      "bytes":  244,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/provider/PaymentOutcome.java",
+                      "name":  "PaymentOutcome.java",
+                      "extension":  ".java",
+                      "bytes":  92,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/provider/PaymentProvider.java",
+                      "name":  "PaymentProvider.java",
+                      "extension":  ".java",
+                      "bytes":  525,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/provider/ProviderPayment.java",
+                      "name":  "ProviderPayment.java",
+                      "extension":  ".java",
+                      "bytes":  788,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/provider/ProviderPaymentStatus.java",
+                      "name":  "ProviderPaymentStatus.java",
+                      "extension":  ".java",
+                      "bytes":  112,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/provider/ProviderRefund.java",
+                      "name":  "ProviderRefund.java",
+                      "extension":  ".java",
+                      "bytes":  170,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/provider/ProviderRefundStatus.java",
+                      "name":  "ProviderRefundStatus.java",
+                      "extension":  ".java",
+                      "bytes":  111,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/provider/ResilientPaymentProvider.java",
+                      "name":  "ResilientPaymentProvider.java",
+                      "extension":  ".java",
+                      "bytes":  2224,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/provider/SimulatedPaymentProvider.java",
+                      "name":  "SimulatedPaymentProvider.java",
+                      "extension":  ".java",
+                      "bytes":  2344,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/provider/StripePaymentProvider.java",
+                      "name":  "StripePaymentProvider.java",
+                      "extension":  ".java",
+                      "bytes":  6521,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/provider/StripeWebhookSignature.java",
+                      "name":  "StripeWebhookSignature.java",
+                      "extension":  ".java",
+                      "bytes":  2142,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/repository/PaymentAttemptRepository.java",
+                      "name":  "PaymentAttemptRepository.java",
+                      "extension":  ".java",
+                      "bytes":  1222,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/repository/PaymentTransitionRepository.java",
+                      "name":  "PaymentTransitionRepository.java",
+                      "extension":  ".java",
+                      "bytes":  373,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/repository/RefundRepository.java",
+                      "name":  "RefundRepository.java",
+                      "extension":  ".java",
+                      "bytes":  823,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/service/PaymentReconciliationJob.java",
+                      "name":  "PaymentReconciliationJob.java",
+                      "extension":  ".java",
+                      "bytes":  2215,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/service/PaymentService.java",
+                      "name":  "PaymentService.java",
+                      "extension":  ".java",
+                      "bytes":  15436,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/web/AdminPaymentController.java",
+                      "name":  "AdminPaymentController.java",
+                      "extension":  ".java",
+                      "bytes":  1054,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/web/CurrentUser.java",
+                      "name":  "CurrentUser.java",
+                      "extension":  ".java",
+                      "bytes":  509,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/web/dto/ConfirmPaymentRequest.java",
+                      "name":  "ConfirmPaymentRequest.java",
+                      "extension":  ".java",
+                      "bytes":  203,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/web/dto/CreatePaymentRequest.java",
+                      "name":  "CreatePaymentRequest.java",
+                      "extension":  ".java",
+                      "bytes":  551,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/web/dto/PaymentResponse.java",
+                      "name":  "PaymentResponse.java",
+                      "extension":  ".java",
+                      "bytes":  1146,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/web/dto/RefundRequest.java",
+                      "name":  "RefundRequest.java",
+                      "extension":  ".java",
+                      "bytes":  287,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/web/dto/RefundResponse.java",
+                      "name":  "RefundResponse.java",
+                      "extension":  ".java",
+                      "bytes":  894,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/web/PaymentController.java",
+                      "name":  "PaymentController.java",
+                      "extension":  ".java",
+                      "bytes":  2429,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/java/com/dpp/payment/web/StripeWebhookController.java",
+                      "name":  "StripeWebhookController.java",
+                      "extension":  ".java",
+                      "bytes":  3351,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/resources/application.yml",
+                      "name":  "application.yml",
+                      "extension":  ".yml",
+                      "bytes":  2406,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/resources/db/migration/V1_0__create_payments_schema.sql",
+                      "name":  "V1_0__create_payments_schema.sql",
+                      "extension":  ".sql",
+                      "bytes":  1943,
+                      "category":  "database",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/main/resources/db/migration/V1_1__align_payment_status_and_audit.sql",
+                      "name":  "V1_1__align_payment_status_and_audit.sql",
+                      "extension":  ".sql",
+                      "bytes":  810,
+                      "category":  "database",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/test/java/com/dpp/payment/PaymentApiSecurityIntegrationTest.java",
+                      "name":  "PaymentApiSecurityIntegrationTest.java",
+                      "extension":  ".java",
+                      "bytes":  5014,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/test/java/com/dpp/payment/PaymentRefundPendingIntegrationTest.java",
+                      "name":  "PaymentRefundPendingIntegrationTest.java",
+                      "extension":  ".java",
+                      "bytes":  5634,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/test/java/com/dpp/payment/PaymentServiceIntegrationTest.java",
+                      "name":  "PaymentServiceIntegrationTest.java",
+                      "extension":  ".java",
+                      "bytes":  11109,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "payment-service/src/test/java/com/dpp/payment/provider/ResilientPaymentProviderTest.java",
+                      "name":  "ResilientPaymentProviderTest.java",
+                      "extension":  ".java",
+                      "bytes":  5506,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-common/pom.xml",
+                      "name":  "pom.xml",
+                      "extension":  ".xml",
+                      "bytes":  1680,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-common/src/main/java/com/dpp/common/config/PlatformCommonAutoConfiguration.java",
+                      "name":  "PlatformCommonAutoConfiguration.java",
+                      "extension":  ".java",
+                      "bytes":  1283,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-common/src/main/java/com/dpp/common/error/ApiError.java",
+                      "name":  "ApiError.java",
+                      "extension":  ".java",
+                      "bytes":  968,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-common/src/main/java/com/dpp/common/error/ApiException.java",
+                      "name":  "ApiException.java",
+                      "extension":  ".java",
+                      "bytes":  1108,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-common/src/main/java/com/dpp/common/error/ErrorCode.java",
+                      "name":  "ErrorCode.java",
+                      "extension":  ".java",
+                      "bytes":  1356,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-common/src/main/java/com/dpp/common/error/FieldViolation.java",
+                      "name":  "FieldViolation.java",
+                      "extension":  ".java",
+                      "bytes":  94,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-common/src/main/java/com/dpp/common/error/GlobalExceptionHandler.java",
+                      "name":  "GlobalExceptionHandler.java",
+                      "extension":  ".java",
+                      "bytes":  3427,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-common/src/main/java/com/dpp/common/event/EventEnvelope.java",
+                      "name":  "EventEnvelope.java",
+                      "extension":  ".java",
+                      "bytes":  962,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-common/src/main/java/com/dpp/common/event/EventTypes.java",
+                      "name":  "EventTypes.java",
+                      "extension":  ".java",
+                      "bytes":  924,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-common/src/main/java/com/dpp/common/event/Topics.java",
+                      "name":  "Topics.java",
+                      "extension":  ".java",
+                      "bytes":  505,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-common/src/main/java/com/dpp/common/security/InternalServiceToken.java",
+                      "name":  "InternalServiceToken.java",
+                      "extension":  ".java",
+                      "bytes":  191,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-common/src/main/java/com/dpp/common/security/Roles.java",
+                      "name":  "Roles.java",
+                      "extension":  ".java",
+                      "bytes":  381,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-common/src/main/java/com/dpp/common/web/CorrelationId.java",
+                      "name":  "CorrelationId.java",
+                      "extension":  ".java",
+                      "bytes":  322,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-common/src/main/java/com/dpp/common/web/CorrelationIdFilter.java",
+                      "name":  "CorrelationIdFilter.java",
+                      "extension":  ".java",
+                      "bytes":  1123,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-common/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports",
+                      "name":  "org.springframework.boot.autoconfigure.AutoConfiguration.imports",
+                      "extension":  ".imports",
+                      "bytes":  54,
+                      "category":  "other-text",
+                      "textCandidate":  false
+                  },
+                  {
+                      "path":  "platform-common/src/test/java/com/dpp/common/error/ApiErrorTest.java",
+                      "name":  "ApiErrorTest.java",
+                      "extension":  ".java",
+                      "bytes":  1648,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-common/src/test/java/com/dpp/common/event/EventEnvelopeTest.java",
+                      "name":  "EventEnvelopeTest.java",
+                      "extension":  ".java",
+                      "bytes":  1620,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-common/src/test/java/com/dpp/common/web/CorrelationIdFilterTest.java",
+                      "name":  "CorrelationIdFilterTest.java",
+                      "extension":  ".java",
+                      "bytes":  1466,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-messaging/pom.xml",
+                      "name":  "pom.xml",
+                      "extension":  ".xml",
+                      "bytes":  1984,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-messaging/src/main/java/com/dpp/messaging/MessagingAutoConfiguration.java",
+                      "name":  "MessagingAutoConfiguration.java",
+                      "extension":  ".java",
+                      "bytes":  3901,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-messaging/src/main/java/com/dpp/messaging/OutboxRelay.java",
+                      "name":  "OutboxRelay.java",
+                      "extension":  ".java",
+                      "bytes":  7567,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-messaging/src/main/java/com/dpp/messaging/OutboxWriter.java",
+                      "name":  "OutboxWriter.java",
+                      "extension":  ".java",
+                      "bytes":  1655,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-messaging/src/main/java/com/dpp/messaging/ProcessedEventStore.java",
+                      "name":  "ProcessedEventStore.java",
+                      "extension":  ".java",
+                      "bytes":  905,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-messaging/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports",
+                      "name":  "org.springframework.boot.autoconfigure.AutoConfiguration.imports",
+                      "extension":  ".imports",
+                      "bytes":  45,
+                      "category":  "other-text",
+                      "textCandidate":  false
+                  },
+                  {
+                      "path":  "platform-testing/pom.xml",
+                      "name":  "pom.xml",
+                      "extension":  ".xml",
+                      "bytes":  1248,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-testing/src/main/java/com/dpp/testing/AbstractPostgresIntegrationTest.java",
+                      "name":  "AbstractPostgresIntegrationTest.java",
+                      "extension":  ".java",
+                      "bytes":  763,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-testing/src/main/java/com/dpp/testing/KafkaContainerSupport.java",
+                      "name":  "KafkaContainerSupport.java",
+                      "extension":  ".java",
+                      "bytes":  342,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "platform-testing/src/main/java/com/dpp/testing/TestImages.java",
+                      "name":  "TestImages.java",
+                      "extension":  ".java",
+                      "bytes":  277,
+                      "category":  "source",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "pom.xml",
+                      "name":  "pom.xml",
+                      "extension":  ".xml",
+                      "bytes":  3800,
+                      "category":  "configuration",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "postman/skills/api-builder/reference/collection_schema_v3.md",
+                      "name":  "collection_schema_v3.md",
+                      "extension":  ".md",
+                      "bytes":  9644,
+                      "category":  "documentation",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "postman/skills/api-builder/SKILL.md",
+                      "name":  "SKILL.md",
+                      "extension":  ".md",
+                      "bytes":  3397,
+                      "category":  "documentation",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "PRD.md",
+                      "name":  "PRD.md",
+                      "extension":  ".md",
+                      "bytes":  15332,
+                      "category":  "project-doc",
+                      "textCandidate":  true
+                  },
+                  {
+                      "path":  "README.md",
+                      "name":  "README.md",
+                      "extension":  ".md",
+                      "bytes":  3070,
+                      "category":  "project-doc",
+                      "textCandidate":  true
+                  }
+              ],
+    "excludedFileSample":  [
+                               {
+                                   "path":  ".env.example",
+                                   "reason":  "excluded by size, sensitive-name, or binary/lockfile rule"
+                               },
+                               {
+                                   "path":  ".mvn/wrapper/maven-wrapper.jar",
+                                   "reason":  "excluded by size, sensitive-name, or binary/lockfile rule"
+                               }
+                           ]
+}

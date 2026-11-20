@@ -1,0 +1,42 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/admin/notifications/:id"
+  method: GET
+  headers:
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+    - key: Accept
+      value: application/json
+  pathVariables:
+    - key: id
+      value: 623217c2-3f91-3bae-502c-2f9707f4816b
+      disabled: false
+      description: "(Required) "
+  body:
+    type: text
+    content: ""
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "id": "c848d354-3846-8a4c-973b-81fa0ef80ebd",
+        "eventId": "3ee3b985-6177-a5aa-88bb-b2d311cdd741",
+        "eventType": "string",
+        "orderId": "9f9be70c-1dd7-3527-d901-b98d7e9ff26e",
+        "customerId": "0a3c7f53-ea38-b134-6118-1c2eeb25d556",
+        "recipient": "string",
+        "channel": "string",
+        "subject": "string",
+        "body": "string",
+        "status": "<string>",
+        "createdAt": "2013-04-07T19:30:48.175Z",
+        "error": "string",
+        "deliveredAt": "2005-05-29T02:31:23.245Z"
+      }
+order: 1000

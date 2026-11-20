@@ -1,0 +1,4 @@
+$kind: collection
+name: Payments
+description: Customer payment endpoints using the collection bearer token.
+order: 8000

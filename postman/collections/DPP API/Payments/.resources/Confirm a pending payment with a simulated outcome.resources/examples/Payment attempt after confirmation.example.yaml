@@ -1,0 +1,44 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/payments/:id/confirm"
+  method: POST
+  headers:
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+    - key: Accept
+      value: application/json
+  pathVariables:
+    - key: id
+      value: 623217c2-3f91-3bae-502c-2f9707f4816b
+      disabled: false
+      description: "(Required) "
+  body:
+    type: json
+    content: |-
+      {
+        "outcome": "SUCCEEDED"
+      }
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "id": "8af518e1-5c77-0872-f92f-0e1526f77978",
+        "orderId": "0b295b53-343c-fd0d-b9c5-89d7c39cc433",
+        "customerId": "360d74dc-827d-9b32-eb9e-51ffe6ea3117",
+        "status": "REFUND_PENDING",
+        "amount": 1429.1148190386593,
+        "currency": "string",
+        "provider": "string",
+        "createdAt": "2007-04-01T07:38:25.306Z",
+        "updatedAt": "1967-03-30T14:35:55.627Z",
+        "providerPaymentId": "string",
+        "failureCode": "string",
+        "failureMessage": "string"
+      }
+order: 1000

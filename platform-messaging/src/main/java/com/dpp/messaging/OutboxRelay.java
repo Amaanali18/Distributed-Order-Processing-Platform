@@ -2,6 +2,7 @@ package com.dpp.messaging;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.dpp.common.event.Topics;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -78,7 +79,7 @@ public class OutboxRelay {
                 markSent(message.id());
                 published++;
             } else {
-                markFailedAttempt(message);
+                handleFailedAttempt(message);
             }
         }
         return published;
@@ -108,25 +109,68 @@ public class OutboxRelay {
                 """, Map.of("id", id, "now", OffsetDateTime.now(ZoneOffset.UTC)));
     }
 
-    private void markFailedAttempt(OutboxMessage message) {
+    private void handleFailedAttempt(OutboxMessage message) {
         int attempts = message.attempts() + 1;
-        boolean exhausted = attempts >= maxAttempts;
+        if (attempts >= maxAttempts) {
+            if (publishToDeadLetter(message)) {
+                jdbc.update("""
+                        UPDATE outbox_messages
+                        SET status = 'DEAD_LETTERED',
+                            attempts = :attempts,
+                            last_error = :lastError
+                        WHERE id = :id
+                        """, Map.of(
+                        "id", message.id(),
+                        "attempts", attempts,
+                        "lastError", "exhausted " + attempts + " attempts; routed to " + Topics.deadLetter(message.topic())));
+                log.error("Outbox message {} exhausted {} attempts and was dead-lettered to {}",
+                        message.id(), attempts, Topics.deadLetter(message.topic()));
+                return;
+            }
+            jdbc.update("""
+                    UPDATE outbox_messages
+                    SET status = 'PENDING',
+                        attempts = :attempts,
+                        available_at = :availableAt,
+                        last_error = :lastError
+                    WHERE id = :id
+                    """, Map.of(
+                    "id", message.id(),
+                    "attempts", attempts,
+                    "availableAt", OffsetDateTime.ofInstant(
+                            Instant.now().plusMillis(retryBackoffMs * Math.max(1, attempts)), ZoneOffset.UTC),
+                    "lastError", "exhausted attempts; dead-letter send pending"));
+            log.error("Outbox message {} exhausted {} attempts but dead-letter publish failed; will retry",
+                    message.id(), attempts);
+            return;
+        }
+
         jdbc.update("""
                 UPDATE outbox_messages
-                SET status = :status,
+                SET status = 'PENDING',
                     attempts = :attempts,
                     available_at = :availableAt,
                     last_error = :lastError
                 WHERE id = :id
                 """, Map.of(
                 "id", message.id(),
-                "status", exhausted ? "FAILED" : "PENDING",
                 "attempts", attempts,
                 "availableAt", OffsetDateTime.ofInstant(
                         Instant.now().plusMillis(retryBackoffMs * attempts), ZoneOffset.UTC),
                 "lastError", "publish attempt " + attempts + " failed"));
-        if (exhausted) {
-            log.error("Outbox message {} exhausted {} attempts and was marked FAILED", message.id(), attempts);
+    }
+
+    private boolean publishToDeadLetter(OutboxMessage message) {
+        try {
+            kafkaTemplate.send(Topics.deadLetter(message.topic()), message.messageKey(), message.payload())
+                    .get(sendTimeoutMs, TimeUnit.MILLISECONDS);
+            return true;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
+        } catch (Exception e) {
+            log.warn("Dead-letter publish failed for outbox message {}: {}", message.id(), e.getMessage());
+            return false;
         }
     }
 

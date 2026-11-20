@@ -1,0 +1,23 @@
+$kind: http-request
+description: Public endpoint. Returns 201 with the created user.
+url: "{{base_url}}/auth/register"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "{{customer_email}}",
+      "password": "{{customer_password}}"
+    }
+scripts:
+  - type: beforeRequest
+    language: text/javascript
+    code: |-
+      pm.environment.set('customer_email', 'postman+' + Date.now() + '@dpp.local');
+      pm.environment.set('customer_password', 'Passw0rd!');
+settings: {}
+examples: ./.resources/Register a new customer account.resources/examples
+order: 1000

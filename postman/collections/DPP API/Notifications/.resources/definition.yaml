@@ -1,0 +1,4 @@
+$kind: collection
+name: Notifications
+description: Customer notification history using the collection bearer token.
+order: 10000

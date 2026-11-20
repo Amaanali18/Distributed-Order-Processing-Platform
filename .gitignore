@@ -1,0 +1,42 @@
+# Build output
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+dist/
+build/
+
+# Node / frontend
+node_modules/
+frontend/dist/
+npm-debug.log*
+yarn-error.log*
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets & local env
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.jwk
+keys/
+
+# Logs
+*.log
+logs/
+
+# Postman local (keep committed sources, ignore transient caches)
+.postman/*.cache

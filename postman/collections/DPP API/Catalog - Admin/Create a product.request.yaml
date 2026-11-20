@@ -1,0 +1,26 @@
+$kind: http-request
+description: Requires a bearer token with the ADMIN role.
+url: "{{base_url}}/admin/products"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
+body:
+  type: json
+  content: |-
+    {
+      "sku": "{{product_sku}}",
+      "name": "Postman Widget",
+      "price": 12.50,
+      "currency": "USD",
+      "totalStock": 10,
+      "description": "Created by the DPP API Postman collection."
+    }
+scripts:
+  - type: beforeRequest
+    language: text/javascript
+    code: |-
+      pm.environment.set('product_sku', 'PM-' + Date.now());
+settings: {}
+examples: ./.resources/Create a product.resources/examples
+order: 2000

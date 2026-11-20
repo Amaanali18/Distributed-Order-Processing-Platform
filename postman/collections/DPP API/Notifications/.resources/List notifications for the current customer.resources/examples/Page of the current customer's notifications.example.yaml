@@ -1,0 +1,67 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/notifications?page=0&size=20"
+  method: GET
+  headers:
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+    - key: Accept
+      value: application/json
+  queryParams:
+    page: "0"
+    size: "20"
+  body:
+    type: text
+    content: ""
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "content": [
+          {
+            "id": "f1e2adec-4e01-cf08-0043-00de14e4b0ef",
+            "eventId": "22782fd8-284b-7fef-9de8-d6fbf55c3d52",
+            "eventType": "string",
+            "orderId": "5ce86f71-e92c-61cd-cc9f-77634a07b348",
+            "customerId": "1b8ea6e6-f48c-5063-bccf-2f85b90ac462",
+            "recipient": "string",
+            "channel": "string",
+            "subject": "string",
+            "body": "string",
+            "status": "SENT",
+            "createdAt": "1966-04-19T22:39:45.920Z",
+            "error": "string",
+            "deliveredAt": "1957-01-09T12:45:37.408Z"
+          },
+          {
+            "id": "2b991333-6a9d-5a19-85ac-6cb45dac37de",
+            "eventId": "ab83368b-5f75-69b1-4aa3-713b22b633c0",
+            "eventType": "string",
+            "orderId": "81bc5f94-9c7b-508c-f4e0-133e9187786a",
+            "customerId": "4fed90e3-d3b0-045a-6c1b-e2f9453c1561",
+            "recipient": "string",
+            "channel": "string",
+            "subject": "string",
+            "body": "string",
+            "status": "FAILED",
+            "createdAt": "2008-06-01T00:28:08.578Z",
+            "error": "string",
+            "deliveredAt": "2014-06-06T19:36:46.684Z"
+          }
+        ],
+        "totalElements": 3442,
+        "totalPages": 749,
+        "number": 7757,
+        "size": 1194,
+        "numberOfElements": 6209,
+        "first": false,
+        "last": false,
+        "empty": true
+      }
+order: 1000

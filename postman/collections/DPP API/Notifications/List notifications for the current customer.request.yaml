@@ -1,0 +1,30 @@
+$kind: http-request
+description: ""
+url: "{{base_url}}/notifications?page=0&size=20"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  - key: page
+    value: "0"
+    disabled: false
+    description: Zero-based page index accepted by Spring Data Pageable.
+  - key: size
+    value: "20"
+    disabled: false
+    description: Page size accepted by Spring Data Pageable.
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('customer notifications list returns 200', function () {
+        pm.response.to.have.status(200);
+        const body = pm.response.json();
+        pm.expect(body.content).to.be.an('array');
+        if (body.content.length > 0) {
+          pm.environment.set('notification_id', body.content[0].id);
+        }
+      });
+settings: {}
+examples: ./.resources/List notifications for the current customer.resources/examples
+order: 1000

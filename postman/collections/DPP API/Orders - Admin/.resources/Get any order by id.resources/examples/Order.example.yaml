@@ -1,0 +1,53 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/admin/orders/:id"
+  method: GET
+  headers:
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+    - key: Accept
+      value: application/json
+  pathVariables:
+    - key: id
+      value: 623217c2-3f91-3bae-502c-2f9707f4816b
+      disabled: false
+      description: (Required) Order id.
+  body:
+    type: text
+    content: ""
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "id": "7da84fc9-5a8b-7471-adef-16a805b96ef9",
+        "customerId": "bc2e3adc-76d7-6e01-2253-a5f20f5b8841",
+        "customerEmail": "string",
+        "status": "<string>",
+        "totalAmount": 7139.9528067559,
+        "currency": "string",
+        "items": [
+          {
+            "productId": "197210b0-d697-9b04-07f1-43de2ee76e33",
+            "sku": "string",
+            "name": "string",
+            "quantity": 135,
+            "unitPrice": 4195.958939380944
+          },
+          {
+            "productId": "7806512d-56d2-4b69-fdba-a1367fd3c7e9",
+            "sku": "string",
+            "name": "string",
+            "quantity": 7835,
+            "unitPrice": 3464.5646368153393
+          }
+        ],
+        "createdAt": "1995-01-17T07:11:21.347Z",
+        "updatedAt": "1998-02-16T15:32:08.412Z"
+      }
+order: 1000

@@ -1,0 +1,26 @@
+stateDiagram-v2
+    [*] --> PENDING: POST /orders, stock reserved
+    PENDING --> CONFIRMED: PaymentSucceeded then reservation committed
+    PENDING --> FAILED: PaymentFailed then reservation released
+    PENDING --> CANCELLED: cancel request then reservation released
+    CONFIRMED --> REFUND_PENDING: RefundPending event
+    REFUND_PENDING --> REFUNDED: RefundCompleted event
+    CONFIRMED --> REFUNDED: RefundCompleted with no prior RefundPending
+
+    note right of PENDING
+        Created only after catalog-service reserves stock via Feign.
+        A reservation that is never paid is released by the scheduled
+        expiry sweep, not by an order-status change.
+    end note
+
+    note right of CANCELLED
+        Intended behavior: if a payment settles successfully after this
+        terminal state, the payment layer issues a full refund.
+        Current code does not move a CANCELLED or FAILED order back to
+        REFUND_PENDING or REFUNDED; the refund is a payment-side effect.
+    end note
+
+    note right of REFUNDED
+        Terminal. Requires CONFIRMED or REFUND_PENDING as the source
+        status in Order.refund().
+    end note

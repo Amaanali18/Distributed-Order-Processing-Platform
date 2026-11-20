@@ -1,0 +1,41 @@
+$kind: http-request
+description: |-
+  Requires a customer bearer token and the Idempotency-Key header. The
+  controller declares the header optional, but PaymentService rejects a
+  missing/blank value with 400 VALIDATION_ERROR. Reusing a key with a
+  different payload returns 409 IDEMPOTENCY_KEY_REUSE; a matching replay
+  returns the existing attempt with 201.
+url: "{{base_url}}/payments"
+method: POST
+headers:
+  - key: Idempotency-Key
+    value: '{{idempotency_key}}'
+    disabled: false
+    description: (Required) Required by PaymentService. Reuse with a different payload returns 409 IDEMPOTENCY_KEY_REUSE.
+  - key: Content-Type
+    value: application/json
+  - key: Accept
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "orderId": "{{order_id}}",
+      "amount": {{payment_amount}},
+      "currency": "{{currency}}"
+    }
+settings: {}
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('create payment returns 201 with a pending attempt', function () {
+        pm.response.to.have.status(201);
+        const body = pm.response.json();
+        pm.expect(body.id).to.be.a('string');
+        pm.expect(body.orderId).to.eql(pm.environment.get('order_id'));
+        pm.expect(body.status).to.eql('PENDING');
+        pm.environment.set('payment_id', body.id);
+      });
+examples: ./.resources/Create a payment attempt for a pending order.resources/examples
+order: 1000

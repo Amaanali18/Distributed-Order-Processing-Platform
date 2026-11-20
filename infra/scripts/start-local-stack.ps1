@@ -19,6 +19,7 @@ $services = @(
     @{ Name = 'catalog-service';  Port = 8082; Jar = 'catalog-service\target\catalog-service-1.0.0-SNAPSHOT.jar';  Env = @{ DPP_INTERNAL_SERVICE_TOKEN = 'dpp-internal-dev-token' } },
     @{ Name = 'order-service';    Port = 8083; Jar = 'order-service\target\order-service-1.0.0-SNAPSHOT.jar';      Env = @{ DPP_INTERNAL_SERVICE_TOKEN = 'dpp-internal-dev-token' } },
     @{ Name = 'payment-service';  Port = 8084; Jar = 'payment-service\target\payment-service-1.0.0-SNAPSHOT.jar';  Env = @{ DPP_INTERNAL_SERVICE_TOKEN = 'dpp-internal-dev-token'; PAYMENT_PROVIDER = 'simulated' } },
+    @{ Name = 'notification-service'; Port = 8085; Jar = 'notification-service\target\notification-service-1.0.0-SNAPSHOT.jar'; Env = @{ DPP_NOTIFICATION_SENDER = 'log' } },
     @{ Name = 'api-gateway';      Port = 8080; Jar = 'api-gateway\target\api-gateway-1.0.0-SNAPSHOT.jar';         Env = $null }
 )
 
@@ -70,11 +71,12 @@ Start-Group -items @($services[1], $services[2])
 if (-not (Wait-Healthy 'http://localhost:8081/actuator/health' 120 'auth-service')) { exit 1 }
 if (-not (Wait-Healthy 'http://localhost:8082/actuator/health' 120 'catalog-service')) { exit 1 }
 
-Start-Group -items @($services[3], $services[4])
+Start-Group -items @($services[3], $services[4], $services[5])
 if (-not (Wait-Healthy 'http://localhost:8083/actuator/health' 120 'order-service')) { exit 1 }
 if (-not (Wait-Healthy 'http://localhost:8084/actuator/health' 120 'payment-service')) { exit 1 }
+if (-not (Wait-Healthy 'http://localhost:8085/actuator/health' 120 'notification-service')) { exit 1 }
 
-Start-Group -items @($services[5])
+Start-Group -items @($services[6])
 if (-not (Wait-Healthy 'http://localhost:8080/actuator/health' 120 'api-gateway')) { exit 1 }
 
 Set-Content -Path $pidFile -Value ($pids -join "`n")

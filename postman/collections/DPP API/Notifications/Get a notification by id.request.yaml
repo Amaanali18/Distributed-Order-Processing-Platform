@@ -1,0 +1,14 @@
+$kind: http-request
+description: A customer may read their own notification; an ADMIN may read any notification.
+url: "{{base_url}}/notifications/:id"
+method: GET
+headers:
+  Accept: application/json
+pathVariables:
+  - key: id
+    value: '{{notification_id}}'
+    disabled: false
+    description: "(Required) "
+settings: {}
+examples: ./.resources/Get a notification by id.resources/examples
+order: 2000

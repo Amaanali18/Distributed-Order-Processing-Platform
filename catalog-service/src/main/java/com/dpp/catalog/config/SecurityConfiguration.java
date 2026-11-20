@@ -33,7 +33,7 @@ public class SecurityConfiguration {
                 .addFilterBefore(new InternalServiceTokenFilter(internalServiceToken), AuthorizationFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.GET, "/products", "/products/*").permitAll()
-                        .requestMatchers("/actuator/health/**", "/actuator/info",
+                        .requestMatchers("/actuator/health/**", "/actuator/info", "/actuator/prometheus",
                                 "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/internal/**").authenticated()

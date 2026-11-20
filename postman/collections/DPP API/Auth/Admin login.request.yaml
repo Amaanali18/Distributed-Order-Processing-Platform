@@ -1,0 +1,28 @@
+$kind: http-request
+name: Admin login
+description: Public login using the placeholder admin credentials; stores adminToken for ADMIN-only requests.
+url: '{{base_url}}/auth/login'
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "{{admin_email}}",
+      "password": "{{admin_password}}"
+    }
+settings: {}
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('admin login returns 200 and stores admin token', function () {
+        pm.response.to.have.status(200);
+        const body = pm.response.json();
+        pm.expect(body.accessToken).to.be.a('string').and.not.empty;
+        pm.expect(body.tokenType).to.eql('Bearer');
+        pm.environment.set('adminToken', body.accessToken);
+      });
+order: 5000

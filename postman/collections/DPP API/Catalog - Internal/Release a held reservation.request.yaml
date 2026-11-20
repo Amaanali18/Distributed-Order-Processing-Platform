@@ -1,0 +1,20 @@
+$kind: http-request
+description: Service-to-service only. Not routed through the gateway.
+url: "{{catalog_service_url}}/internal/inventory/reservations/:orderId/release"
+method: POST
+headers:
+  Accept: application/json
+pathVariables:
+  - key: orderId
+    value: '{{order_id}}'
+    disabled: false
+    description: "(Required) "
+auth:
+  type: apikey
+  credentials:
+    key: X-Internal-Service-Token
+    value: "{{internal_token}}"
+    in: header
+settings: {}
+examples: ./.resources/Release a held reservation.resources/examples
+order: 4000

@@ -1,0 +1,8 @@
+$kind: collection
+name: Catalog - Admin
+description: ADMIN-only product management.
+order: 3000
+auth:
+  type: bearer
+  credentials:
+    token: '{{adminToken}}'

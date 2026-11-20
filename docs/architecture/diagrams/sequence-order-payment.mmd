@@ -1,0 +1,90 @@
+sequenceDiagram
+    autonumber
+    actor C as Client
+    participant GW as API Gateway
+    participant OS as Order Service
+    participant CS as Catalog Service
+    participant PS as Payment Service
+    participant PA as PaymentProvider adapter
+    participant K as Kafka
+    participant NS as Notification Service
+
+    Note over C,GW: Client already holds a JWT from POST /auth/login
+
+    rect rgb(235, 245, 255)
+    Note over C,NS: Happy path
+    C->>GW: POST /orders with items
+    GW->>OS: POST /orders, validated JWT
+    OS->>CS: Feign POST /internal/inventory/reserve
+    CS-->>OS: reservation held, stock moved to reserved
+    OS->>OS: persist PENDING + outbox OrderCreated
+    OS-->>GW: 201 OrderResponse status PENDING
+    GW-->>C: 201 OrderResponse status PENDING
+    OS->>K: OrderCreated on orders.v1
+    K->>NS: OrderCreated notification
+
+    C->>GW: POST /payments, Idempotency-Key header
+    GW->>PS: POST /payments, validated JWT
+    PS->>PS: persist PENDING attempt, enforce key uniqueness
+    PS->>PA: createPayment with provider idempotency key
+    PA-->>PS: providerPaymentId, simulated adapter by default
+    PS-->>GW: 201 PaymentResponse status PENDING
+    GW-->>C: 201 PaymentResponse status PENDING
+
+    C->>GW: POST /payments/{id}/confirm outcome SUCCEEDED
+    GW->>PS: confirm, verify ownership
+    PS->>PA: confirmPayment / provider lookup
+    PA-->>PS: SUCCEEDED
+    PS->>PS: status SUCCESS + audit transition
+    PS->>K: PaymentSucceeded on payments.v1
+    K->>NS: PaymentSucceeded notification
+    K->>OS: PaymentSucceeded on payments.v1, dedupe by eventId
+    OS->>CS: Feign POST /internal/inventory/reservations/{orderId}/commit
+    CS-->>OS: reservation consumed
+    OS->>OS: PENDING -> CONFIRMED
+    OS->>K: OrderConfirmed on orders.v1
+    K->>NS: OrderConfirmed notification
+    end
+
+    rect rgb(255, 240, 240)
+    Note over C,NS: Failed payment path
+    C->>GW: POST /payments/{id}/confirm outcome FAILED
+    GW->>PS: confirm, verify ownership
+    PS->>PA: confirmPayment / provider lookup
+    PA-->>PS: FAILED with failure code
+    PS->>PS: status FAILED + audit transition
+    PS->>K: PaymentFailed on payments.v1
+    K->>OS: PaymentFailed on payments.v1, dedupe by eventId
+    OS->>CS: Feign POST /internal/inventory/reservations/{orderId}/release
+    CS-->>OS: reservation released to available stock
+    OS->>OS: PENDING -> FAILED
+    OS->>K: OrderFailed on orders.v1
+    K->>PS: OrderFailed, flag PENDING attempts for refund if they settle late
+    K->>NS: OrderFailed notification
+    end
+
+    rect rgb(255, 248, 230)
+    Note over C,NS: Cancellation and late-success compensation - intended behavior
+    C->>GW: POST /orders/{id}/cancel while order is PENDING
+    GW->>OS: cancel, verify ownership
+    OS->>CS: Feign release reservation
+    OS->>OS: PENDING -> CANCELLED
+    OS->>K: OrderCancelled on orders.v1
+    K->>PS: OrderCancelled, mark PENDING attempts cancel-requested
+    NS->>NS: OrderCancelled notification from orders.v1
+
+    Note over PA,PS: Provider settles after the order was cancelled
+    PA-->>PS: webhook or reconciliation reports SUCCEEDED
+    PS->>PS: PENDING -> SUCCESS, cancellation flag detected
+    PS->>PA: refund full amount, reason late_success_after_termination
+    PA-->>PS: refund SUCCEEDED or PENDING
+    alt refund completed immediately
+        PS->>PS: status REFUNDED
+        PS->>K: RefundCompleted on payments.v1
+    else refund pending
+        PS->>PS: status REFUND_PENDING
+        PS->>K: RefundPending on payments.v1
+        Note over PS,K: reconciliation later emits RefundCompleted
+    end
+    Note over OS,K: Intended: order must not keep a captured payment after cancellation.<br/>Current code refunds at the payment layer; a CANCELLED or FAILED order<br/>is not transitioned to REFUND_PENDING / REFUNDED because order.refund()<br/>only accepts CONFIRMED or REFUND_PENDING. Treat that gap as open.
+    end

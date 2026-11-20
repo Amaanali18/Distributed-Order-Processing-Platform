@@ -140,6 +140,35 @@ class NotificationServiceIntegrationTest extends AbstractPostgresIntegrationTest
     }
 
     @Test
+    void orderFailedRendersFailure() {
+        UUID orderId = UUID.randomUUID();
+        UUID eventId = UUID.randomUUID();
+        ObjectNode payload = orderPayload(orderId, UUID.randomUUID(), "customer@dpp.local");
+        payload.put("reason", "payment failed");
+
+        notifications.handle(EventTypes.ORDER_FAILED, eventId, orderId, payload, "corr");
+
+        Notification stored = notificationRepository.findByEventId(eventId).orElseThrow();
+        assertThat(stored.getSubject()).isEqualTo("Order failed");
+        assertThat(stored.getBody()).contains("payment failed");
+    }
+
+    @Test
+    void refundPendingRendersForKnownRecipient() {
+        UUID orderId = UUID.randomUUID();
+        notifications.handle(EventTypes.ORDER_CREATED, UUID.randomUUID(), orderId,
+                orderPayload(orderId, UUID.randomUUID(), "customer@dpp.local"), "corr");
+
+        UUID eventId = UUID.randomUUID();
+        notifications.handle(EventTypes.REFUND_PENDING, eventId, orderId,
+                paymentPayload(orderId, UUID.randomUUID()), "corr");
+
+        Notification stored = notificationRepository.findByEventId(eventId).orElseThrow();
+        assertThat(stored.getSubject()).isEqualTo("Refund in progress");
+        assertThat(stored.getRecipient()).isEqualTo("customer@dpp.local");
+    }
+
+    @Test
     void unhandledEventCreatesNothing() {
         UUID orderId = UUID.randomUUID();
         UUID eventId = UUID.randomUUID();

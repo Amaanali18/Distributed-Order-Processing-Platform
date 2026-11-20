@@ -1,0 +1,18 @@
+$kind: http-request
+description: ""
+url: "{{base_url}}/payments?page=0&size=20"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  - key: page
+    value: "0"
+    disabled: false
+    description: Zero-based page index accepted by Spring Data Pageable.
+  - key: size
+    value: "20"
+    disabled: false
+    description: Page size accepted by Spring Data Pageable.
+settings: {}
+examples: ./.resources/List payment attempts belonging to the current customer.resources/examples
+order: 2000

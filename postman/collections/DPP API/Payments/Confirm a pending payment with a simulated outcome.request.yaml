@@ -1,0 +1,21 @@
+$kind: http-request
+description: Requires a bearer token. A non-pending attempt is returned unchanged.
+url: "{{base_url}}/payments/:id/confirm"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
+pathVariables:
+  - key: id
+    value: '{{payment_id}}'
+    disabled: false
+    description: "(Required) "
+body:
+  type: json
+  content: |-
+    {
+      "outcome": "SUCCEEDED"
+    }
+settings: {}
+examples: ./.resources/Confirm a pending payment with a simulated outcome.resources/examples
+order: 5000

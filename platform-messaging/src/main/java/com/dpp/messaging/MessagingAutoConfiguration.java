@@ -1,8 +1,7 @@
 package com.dpp.messaging;
 
-import com.dpp.common.event.Topics;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.kafka.common.TopicPartition;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -14,14 +13,11 @@ import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.listener.CommonErrorHandler;
-import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
-import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.util.backoff.ExponentialBackOff;
 
 @AutoConfiguration(after = {KafkaAutoConfiguration.class, TransactionAutoConfiguration.class,
         JdbcTemplateAutoConfiguration.class, JacksonAutoConfiguration.class})
@@ -55,16 +51,17 @@ public class MessagingAutoConfiguration {
                 batchSize, maxAttempts, retryBackoffMs, sendTimeoutMs);
     }
 
+    // Static factory method keeps this infrastructure bean out of configuration
+    // class initialization. The handler installs itself only after all singletons
+    // exist, so it must not be a BeanPostProcessor (see KafkaListenerErrorHandler).
     @Bean
     @ConditionalOnMissingBean
-    public CommonErrorHandler kafkaErrorHandler(
+    public static KafkaListenerErrorHandler kafkaErrorHandler(
             KafkaTemplate<Object, Object> kafkaTemplate,
+            ObjectProvider<ConcurrentKafkaListenerContainerFactory> containerFactories,
             @Value("${dpp.messaging.listener-retries:3}") long listenerRetries,
             @Value("${dpp.messaging.listener-backoff-ms:1000}") long listenerBackoffMs) {
-        DeadLetterPublishingRecoverer recoverer = new DeadLetterPublishingRecoverer(kafkaTemplate,
-                (record, exception) -> new TopicPartition(Topics.deadLetter(record.topic()), record.partition()));
-        ExponentialBackOff backOff = new ExponentialBackOff(listenerBackoffMs, 2.0);
-        backOff.setMaxElapsedTime(listenerBackoffMs * (1L << Math.max(0, (int) listenerRetries)));
-        return new DefaultErrorHandler(recoverer, backOff);
+        return new KafkaListenerErrorHandler(kafkaTemplate, listenerRetries, listenerBackoffMs,
+                containerFactories);
     }
 }

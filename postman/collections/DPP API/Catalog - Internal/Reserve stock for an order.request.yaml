@@ -1,0 +1,31 @@
+$kind: http-request
+description: |-
+  Service-to-service only. Not routed through the gateway. Requires the
+  X-Internal-Service-Token header configured via dpp.internal.service-token.
+url: "{{catalog_service_url}}/internal/inventory/reserve"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
+body:
+  type: json
+  content: |-
+    {
+      "orderId": "74eff7c8-d27a-536d-d8b0-5fdc850cadbf",
+      "items": [
+        {
+          "productId": "1591e8d3-da4e-ff25-6716-da9200f73d2f",
+          "quantity": 4268
+        }
+      ],
+      "expiresAt": "1989-10-10T23:10:03.041Z"
+    }
+auth:
+  type: apikey
+  credentials:
+    key: X-Internal-Service-Token
+    value: "{{internal_token}}"
+    in: header
+settings: {}
+examples: ./.resources/Reserve stock for an order.resources/examples
+order: 1000

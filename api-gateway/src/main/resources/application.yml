@@ -9,41 +9,101 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: ${AUTH_JWKS_URI:http://localhost:8081/.well-known/jwks.json}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
   cloud:
+    loadbalancer:
+      cache:
+        # A recently recreated service must not stay invisible to the gateway
+        # for the default 35s cache TTL after an empty discovery lookup.
+        ttl: 5s
+        capacity: 256
     gateway:
-      routes:
-        - id: auth-service
-          uri: lb://auth-service
-          predicates:
-            - Path=/auth/**
-        - id: order-admin
-          uri: lb://order-service
-          predicates:
-            - Path=/admin/orders/**
-        - id: order-service
-          uri: lb://order-service
-          predicates:
-            - Path=/orders/**
-        - id: payment-admin
-          uri: lb://payment-service
-          predicates:
-            - Path=/admin/payments/**
-        - id: payment-service
-          uri: lb://payment-service
-          predicates:
-            - Path=/payments/**
-        - id: payment-webhooks
-          uri: lb://payment-service
-          predicates:
-            - Path=/webhooks/**
-        - id: catalog-products
-          uri: lb://catalog-service
-          predicates:
-            - Path=/products/**
-        - id: catalog-admin
-          uri: lb://catalog-service
-          predicates:
-            - Path=/admin/**
+      server:
+        webflux:
+          default-filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: ${GATEWAY_RATE_LIMIT_REPLENISH_RATE:20}
+                redis-rate-limiter.burstCapacity: ${GATEWAY_RATE_LIMIT_BURST_CAPACITY:40}
+                redis-rate-limiter.requestedTokens: 1
+                key-resolver: '#{@rateLimitKeyResolver}'
+          routes:
+            # Per-service OpenAPI JSON through the gateway. Springdoc uses the
+            # same /v3/api-docs path in every service, so the service segment is
+            # stripped before forwarding.
+            - id: auth-api-docs
+              uri: lb://auth-service
+              predicates:
+                - Path=/v3/api-docs/auth/**
+              filters:
+                - RewritePath=/v3/api-docs/auth(/.*)?$, /v3/api-docs$1
+            - id: catalog-api-docs
+              uri: lb://catalog-service
+              predicates:
+                - Path=/v3/api-docs/catalog/**
+              filters:
+                - RewritePath=/v3/api-docs/catalog(/.*)?$, /v3/api-docs$1
+            - id: order-api-docs
+              uri: lb://order-service
+              predicates:
+                - Path=/v3/api-docs/order/**
+              filters:
+                - RewritePath=/v3/api-docs/order(/.*)?$, /v3/api-docs$1
+            - id: payment-api-docs
+              uri: lb://payment-service
+              predicates:
+                - Path=/v3/api-docs/payment/**
+              filters:
+                - RewritePath=/v3/api-docs/payment(/.*)?$, /v3/api-docs$1
+            - id: notification-api-docs
+              uri: lb://notification-service
+              predicates:
+                - Path=/v3/api-docs/notification/**
+              filters:
+                - RewritePath=/v3/api-docs/notification(/.*)?$, /v3/api-docs$1
+            - id: auth-service
+              uri: lb://auth-service
+              predicates:
+                - Path=/auth/**
+            - id: order-admin
+              uri: lb://order-service
+              predicates:
+                - Path=/admin/orders/**
+            - id: order-service
+              uri: lb://order-service
+              predicates:
+                - Path=/orders/**
+            - id: payment-admin
+              uri: lb://payment-service
+              predicates:
+                - Path=/admin/payments/**
+            - id: payment-service
+              uri: lb://payment-service
+              predicates:
+                - Path=/payments/**
+            - id: payment-webhooks
+              uri: lb://payment-service
+              predicates:
+                - Path=/webhooks/**
+            - id: catalog-products
+              uri: lb://catalog-service
+              predicates:
+                - Path=/products/**
+            - id: notification-admin
+              uri: lb://notification-service
+              predicates:
+                - Path=/admin/notifications/**
+            - id: notification-service
+              uri: lb://notification-service
+              predicates:
+                - Path=/notifications/**
+            - id: catalog-admin
+              uri: lb://catalog-service
+              predicates:
+                - Path=/admin/**
 
 eureka:
   client:
@@ -59,7 +119,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,gateway
+        include: health,info,gateway,metrics,prometheus
   endpoint:
     health:
       probes:

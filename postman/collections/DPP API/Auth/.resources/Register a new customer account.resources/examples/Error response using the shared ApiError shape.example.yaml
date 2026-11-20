@@ -1,0 +1,45 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/auth/register"
+  method: POST
+  headers:
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+    - key: Accept
+      value: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "email": "ybklF2PV@YmMTFeVnSwCy.jm",
+        "password": "stringstring"
+      }
+response:
+  statusCode: 500
+  statusText: Internal Server Error
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "timestamp": "1964-01-06T06:48:51.647Z",
+        "status": 9023,
+        "error": "string",
+        "code": "IDEMPOTENCY_KEY_REUSE",
+        "message": "string",
+        "path": "string",
+        "correlationId": "string",
+        "violations": [
+          {
+            "field": "string",
+            "message": "string"
+          },
+          {
+            "field": "string",
+            "message": "string"
+          }
+        ]
+      }
+order: 3000

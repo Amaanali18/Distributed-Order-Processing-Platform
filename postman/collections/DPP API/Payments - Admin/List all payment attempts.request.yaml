@@ -1,0 +1,18 @@
+$kind: http-request
+description: Requires a bearer token with the ADMIN role.
+url: "{{base_url}}/admin/payments?page=0&size=20"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  - key: page
+    value: "0"
+    disabled: false
+    description: Zero-based page index accepted by Spring Data Pageable.
+  - key: size
+    value: "20"
+    disabled: false
+    description: Page size accepted by Spring Data Pageable.
+settings: {}
+examples: ./.resources/List all payment attempts.resources/examples
+order: 1000

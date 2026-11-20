@@ -1,0 +1,44 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/products?page=0&size=20"
+  method: GET
+  headers:
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+    - key: Accept
+      value: application/json
+  queryParams:
+    page: "0"
+    size: "20"
+  body:
+    type: text
+    content: ""
+response:
+  statusCode: 500
+  statusText: Internal Server Error
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "timestamp": "1964-01-06T06:48:51.647Z",
+        "status": 9023,
+        "error": "string",
+        "code": "IDEMPOTENCY_KEY_REUSE",
+        "message": "string",
+        "path": "string",
+        "correlationId": "string",
+        "violations": [
+          {
+            "field": "string",
+            "message": "string"
+          },
+          {
+            "field": "string",
+            "message": "string"
+          }
+        ]
+      }
+order: 2000

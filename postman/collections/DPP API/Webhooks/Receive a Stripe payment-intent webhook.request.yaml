@@ -1,0 +1,38 @@
+$kind: http-request
+description: |-
+  Public endpoint. The raw JSON body is verified using Stripe-Signature
+  when the Stripe provider is configured; invalid signatures, malformed
+  JSON and missing event ids return 400 with no body. Duplicate or
+  unhandled event types return 200 and are ignored. The sample below uses
+  an unhandled type ("ping") so it is a no-op against a running stack.
+url: "{{base_url}}/webhooks/stripe"
+method: POST
+headers:
+  - key: Stripe-Signature
+    value: ''
+    disabled: true
+    description: Stripe signature header used by the Stripe provider for webhook verification.
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "id": "{{webhook_event_id}}",
+      "type": "ping",
+      "data": {
+        "object": {
+          "id": "pi_local_demo"
+        }
+      }
+    }
+settings: {}
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('webhook endpoint accepts the no-op event', function () {
+        pm.response.to.have.status(200);
+      });
+examples: ./.resources/Receive a Stripe payment-intent webhook.resources/examples
+order: 1000

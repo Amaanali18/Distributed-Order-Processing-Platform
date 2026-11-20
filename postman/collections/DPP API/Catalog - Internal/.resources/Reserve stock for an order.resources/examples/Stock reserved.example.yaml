@@ -1,0 +1,48 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/internal/inventory/reserve"
+  method: POST
+  headers:
+    - key: X-Internal-Service-Token
+      value: <API Key>
+      description: "Added as a part of security scheme: apikey"
+    - key: Accept
+      value: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "orderId": "74eff7c8-d27a-536d-d8b0-5fdc850cadbf",
+        "items": [
+          {
+            "productId": "1591e8d3-da4e-ff25-6716-da9200f73d2f",
+            "quantity": 4268
+          }
+        ],
+        "expiresAt": "1989-10-10T23:10:03.041Z"
+      }
+response:
+  statusCode: 201
+  statusText: Created
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "id": "bd491b7c-d6a1-1d25-26d3-1f2260419dbe",
+        "orderId": "87fd937e-48b9-f3e4-69f2-d5b701d53268",
+        "status": "COMMITTED",
+        "items": [
+          {
+            "productId": "dab25705-6382-9434-b31d-5917d2f08533",
+            "quantity": 5032
+          },
+          {
+            "productId": "3e1c4ac4-209e-40a6-56c4-46e5730a86f7",
+            "quantity": 9936
+          }
+        ],
+        "expiresAt": "2008-03-27T17:09:06.517Z"
+      }
+order: 1000

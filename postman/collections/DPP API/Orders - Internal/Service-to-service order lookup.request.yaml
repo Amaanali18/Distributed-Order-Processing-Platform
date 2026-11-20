@@ -1,0 +1,22 @@
+$kind: http-request
+description: |-
+  Not routed through the gateway. Requires the X-Internal-Service-Token
+  header; used by payment-service to verify ownership, amount and state.
+url: "{{order_service_url}}/internal/orders/:id"
+method: GET
+headers:
+  Accept: application/json
+pathVariables:
+  - key: id
+    value: '{{order_id}}'
+    disabled: false
+    description: (Required) Order id.
+auth:
+  type: apikey
+  credentials:
+    key: X-Internal-Service-Token
+    value: "{{internal_token}}"
+    in: header
+settings: {}
+examples: ./.resources/Service-to-service order lookup.resources/examples
+order: 1000

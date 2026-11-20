@@ -1,0 +1,42 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/admin/payments/:id/refund"
+  method: POST
+  headers:
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+    - key: Accept
+      value: application/json
+  pathVariables:
+    - key: id
+      value: 623217c2-3f91-3bae-502c-2f9707f4816b
+      disabled: false
+      description: "(Required) "
+  body:
+    type: json
+    content: |-
+      {
+        "amount": 5859.047615731333,
+        "reason": "string"
+      }
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "id": "38d07960-5a53-5295-f8a6-1aee253a0aaa",
+        "paymentId": "d0747fe7-d5cb-39b9-e5ae-2a406eab8e18",
+        "orderId": "cecd37f9-6407-4413-1952-e86f6c432f13",
+        "amount": 9061.659616418183,
+        "currency": "string",
+        "status": "PENDING",
+        "createdAt": "1965-02-12T09:58:38.974Z",
+        "providerRefundId": "string",
+        "reason": "string"
+      }
+order: 1000

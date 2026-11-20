@@ -1,0 +1,21 @@
+$kind: http-request
+description: Requires a bearer token with the ADMIN role.
+url: "{{base_url}}/admin/products/:id/status"
+method: PATCH
+headers:
+  Content-Type: application/json
+  Accept: application/json
+pathVariables:
+  - key: id
+    value: '{{product_id}}'
+    disabled: false
+    description: "(Required) "
+body:
+  type: json
+  content: |-
+    {
+      "status": "ACTIVE"
+    }
+settings: {}
+examples: ./.resources/Change a product status.resources/examples
+order: 4000

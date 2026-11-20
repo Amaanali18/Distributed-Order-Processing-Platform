@@ -1,0 +1,45 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/payments"
+  method: POST
+  headers:
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+    - key: Idempotency-Key
+      value: string
+      disabled: false
+      description: (Required) Required by PaymentService. Reuse with a different payload returns 409 IDEMPOTENCY_KEY_REUSE.
+    - key: Accept
+      value: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "orderId": "aaa70a31-6fb9-b4c0-75e7-2ecfb657dc2b",
+        "amount": 9910.336794587998,
+        "currency": "bqX"
+      }
+response:
+  statusCode: 201
+  statusText: Created
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "id": "8af518e1-5c77-0872-f92f-0e1526f77978",
+        "orderId": "0b295b53-343c-fd0d-b9c5-89d7c39cc433",
+        "customerId": "360d74dc-827d-9b32-eb9e-51ffe6ea3117",
+        "status": "REFUND_PENDING",
+        "amount": 1429.1148190386593,
+        "currency": "string",
+        "provider": "string",
+        "createdAt": "2007-04-01T07:38:25.306Z",
+        "updatedAt": "1967-03-30T14:35:55.627Z",
+        "providerPaymentId": "string",
+        "failureCode": "string",
+        "failureMessage": "string"
+      }
+order: 1000

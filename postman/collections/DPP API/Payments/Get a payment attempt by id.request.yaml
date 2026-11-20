@@ -1,0 +1,14 @@
+$kind: http-request
+description: A customer may read their own payment; an ADMIN may read any payment.
+url: "{{base_url}}/payments/:id"
+method: GET
+headers:
+  Accept: application/json
+pathVariables:
+  - key: id
+    value: '{{payment_id}}'
+    disabled: false
+    description: "(Required) "
+settings: {}
+examples: ./.resources/Get a payment attempt by id.resources/examples
+order: 3000

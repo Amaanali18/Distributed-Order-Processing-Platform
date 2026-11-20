@@ -1,0 +1,13 @@
+$kind: http-request
+description: ""
+url: "{{base_url}}/auth/me"
+method: GET
+headers:
+  Accept: application/json
+auth:
+  type: bearer
+  credentials:
+    token: '{{customerToken}}'
+settings: {}
+examples: ./.resources/Get the current authenticated user.resources/examples
+order: 4000

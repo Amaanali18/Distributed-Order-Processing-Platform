@@ -1,0 +1,6 @@
+$kind: collection
+name: Webhooks
+description: Public provider callbacks. The sample uses an unhandled event type so it is a no-op.
+order: 12000
+auth:
+  type: noauth

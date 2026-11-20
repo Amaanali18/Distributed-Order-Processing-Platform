@@ -1,0 +1,69 @@
+flowchart LR
+    client["Browser / API client"]
+
+    subgraph edge["Edge"]
+        gateway["API Gateway :8080<br/>routing, JWT validation,<br/>correlation id, rate-limit decision"]
+        eureka["Eureka :8761<br/>service registry"]
+    end
+
+    subgraph services["Spring Boot services"]
+        auth["Auth Service :8081<br/>users, roles, JWT, JWKS"]
+        catalog["Catalog Service :8082<br/>products, stock, reservations"]
+        order["Order Service :8083<br/>order lifecycle, saga, outbox"]
+        payment["Payment Service :8084<br/>attempts, idempotency, webhooks"]
+        notification["Notification Service :8085<br/>event consumer, log / SMTP"]
+    end
+
+    subgraph stores["Data stores - one logical PostgreSQL database per service"]
+        dbauth[("dpp_auth")]
+        dbcatalog[("dpp_catalog")]
+        dborders[("dpp_orders")]
+        dbpayments[("dpp_payments")]
+        dbnotify[("dpp_notifications")]
+        redis[("Redis :6379<br/>rate-limit state per PRD 16")]
+    end
+
+    subgraph messaging["Kafka - at-least-once events"]
+        kafka["Kafka :9092 host / :29092 in compose network"]
+        topics["orders.v1, inventory.v1, payments.v1, notifications.v1<br/>each with .retry and .DLQ companions"]
+    end
+
+    subgraph provider["Payment provider port - ADR 0005"]
+        port["PaymentProvider"]
+        simulated["SimulatedPaymentProvider<br/>default for local and automated tests"]
+        stripe["StripePaymentProvider<br/>test mode, manual verification only"]
+    end
+
+    client --> gateway
+    gateway -->|"POST /auth/**, GET /products/**"| auth
+    gateway -->|"/products/**, /admin/products/**"| catalog
+    gateway -->|"/orders/**, /admin/orders/**"| order
+    gateway -->|"/payments/**, /admin/payments/**, /webhooks/**"| payment
+    gateway -->|"/notifications/**, /admin/notifications/**"| notification
+    gateway -.->|"JWKS"| auth
+    gateway -.-> redis
+
+    auth --> eureka
+    catalog --> eureka
+    order --> eureka
+    payment --> eureka
+    notification --> eureka
+
+    auth --> dbauth
+    catalog --> dbcatalog
+    order -->|"orders + outbox + processed_events"| dborders
+    payment -->|"payments + refunds + outbox"| dbpayments
+    notification --> dbnotify
+
+    order -->|"Feign: reserve / commit / release"| catalog
+
+    order -->|"OrderCreated, OrderConfirmed,<br/>OrderFailed, OrderCancelled"| kafka
+    payment -->|"PaymentSucceeded, PaymentFailed,<br/>RefundPending, RefundCompleted"| kafka
+    kafka -->|"payments.v1"| order
+    kafka -->|"orders.v1 termination events"| payment
+    kafka -->|"orders.v1 + payments.v1"| notification
+    kafka --- topics
+
+    payment --> port
+    port --> simulated
+    port --> stripe

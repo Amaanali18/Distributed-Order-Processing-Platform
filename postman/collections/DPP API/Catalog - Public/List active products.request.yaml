@@ -1,0 +1,33 @@
+$kind: http-request
+description: Public endpoint. Only ACTIVE products are returned.
+url: "{{base_url}}/products?page=0&size=20"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  - key: page
+    value: "0"
+    disabled: false
+    description: Zero-based page index accepted by Spring Data Pageable.
+  - key: size
+    value: "20"
+    disabled: false
+    description: Page size accepted by Spring Data Pageable.
+settings: {}
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('products list returns 200 and a page of active products', function () {
+        pm.response.to.have.status(200);
+        const body = pm.response.json();
+        pm.expect(body.content).to.be.an('array');
+        if (body.content.length > 0) {
+          pm.expect(body.content[0]).to.have.property('id');
+          pm.expect(body.content[0]).to.have.property('sku');
+          pm.expect(body.content[0].status).to.eql('ACTIVE');
+          pm.environment.set('product_id', body.content[0].id);
+        }
+      });
+examples: ./.resources/List active products.resources/examples
+order: 1000

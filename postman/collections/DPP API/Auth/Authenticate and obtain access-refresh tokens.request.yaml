@@ -1,0 +1,32 @@
+$kind: http-request
+name: Authenticate and obtain access/refresh tokens
+description: Public endpoint. tokenType is "Bearer".
+url: "{{base_url}}/auth/login"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "{{customer_email}}",
+      "password": "{{customer_password}}"
+    }
+settings: {}
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('login returns 200 and a token pair', function () {
+        pm.response.to.have.status(200);
+        const body = pm.response.json();
+        pm.expect(body).to.have.property('accessToken').that.is.a('string');
+        pm.expect(body).to.have.property('refreshToken').that.is.a('string');
+        pm.expect(body.tokenType).to.eql('Bearer');
+        pm.expect(body.expiresIn).to.be.a('number');
+        pm.environment.set('customerToken', body.accessToken);
+        pm.environment.set('refreshToken', body.refreshToken);
+      });
+examples: ./.resources/Authenticate and obtain access-refresh tokens.resources/examples
+order: 2000

@@ -1,0 +1,10 @@
+$kind: collection
+name: Catalog - Internal
+description: Service-to-service inventory endpoints; not routed through the gateway.
+order: 4000
+auth:
+  type: apikey
+  credentials:
+    key: X-Internal-Service-Token
+    value: '{{internal_token}}'
+    in: header

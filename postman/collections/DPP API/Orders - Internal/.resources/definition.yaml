@@ -1,0 +1,10 @@
+$kind: collection
+name: Orders - Internal
+description: Service-to-service order lookup; not routed through the gateway.
+order: 7000
+auth:
+  type: apikey
+  credentials:
+    key: X-Internal-Service-Token
+    value: '{{internal_token}}'
+    in: header

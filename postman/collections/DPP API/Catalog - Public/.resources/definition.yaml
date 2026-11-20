@@ -1,0 +1,6 @@
+$kind: collection
+name: Catalog - Public
+description: Public product browsing endpoints.
+order: 2000
+auth:
+  type: noauth

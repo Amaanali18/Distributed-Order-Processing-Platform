@@ -1,0 +1,1931 @@
+openapi: 3.0.3
+info:
+  title: DPP Gateway API
+  version: 1.0.0
+  description: |-
+    HTTP contract for the Distributed Processing Platform, derived from the
+    implemented Spring controllers, DTOs, gateway routes and security rules.
+    These artifacts are local-only; nothing was pushed or published to Postman.
+
+    Notes / intentional gaps:
+    - Paths under /internal/ are implemented service-to-service endpoints. They are
+      NOT routed by api-gateway (see api-gateway application.yml) and use the shared
+      X-Internal-Service-Token header instead of a customer JWT.
+    - Admin operations require the ADMIN role at the gateway/service security layer;
+      OpenAPI 3.0 cannot encode that role requirement, so it is described in text.
+    - The Stripe webhook accepts a raw JSON payload and the controller reads only
+      id, type, data.object.id and last_payment_error.code/message. Other Stripe
+      fields may be present; signature validation depends on the configured provider.
+    - Spring Data Page responses are documented with their stable metadata fields;
+      implementation-specific fields may also be serialized.
+    - Actuator health details are deployment-dependent; only status is guaranteed.
+servers:
+  - url: http://localhost:8080
+    description: Local API gateway
+tags:
+  - name: Auth
+    description: Registration, token issuance and current-user lookup.
+  - name: Catalog - Public
+    description: Public product browsing.
+  - name: Catalog - Admin
+    description: ADMIN-only product management.
+  - name: Catalog - Internal
+    description: Service-to-service inventory reservations (not gateway-routed).
+  - name: Orders
+    description: Customer order creation and history.
+  - name: Orders - Admin
+    description: ADMIN-only order inspection.
+  - name: Orders - Internal
+    description: Service-to-service order lookup (not gateway-routed).
+  - name: Payments
+    description: Customer payment attempts and confirmations.
+  - name: Payments - Admin
+    description: ADMIN-only payment inspection and refunds.
+  - name: Webhooks
+    description: Public payment-provider callbacks.
+  - name: Notifications
+    description: Customer notification history.
+  - name: Notifications - Admin
+    description: ADMIN-only notification inspection.
+  - name: Operations
+    description: Gateway health endpoint.
+security:
+  - bearerAuth: []
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register a new customer account
+      description: Public endpoint. Returns 201 with the created user.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: Validation failure or malformed JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Authenticate and obtain access/refresh tokens
+      description: Public endpoint. tokenType is "Bearer".
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Tokens issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '400':
+          description: Validation failure or malformed JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /auth/refresh:
+    post:
+      tags:
+        - Auth
+      summary: Exchange a refresh token for a new token pair
+      description: Public endpoint.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '200':
+          description: Tokens issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '400':
+          description: Validation failure or malformed JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /auth/me:
+    get:
+      tags:
+        - Auth
+      summary: Get the current authenticated user
+      responses:
+        '200':
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          description: Missing or invalid bearer token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /.well-known/jwks.json:
+    get:
+      tags:
+        - Auth
+      summary: Public JWKS used to verify access tokens
+      description: Served by auth-service on port 8081; not routed through the gateway.
+      security: []
+      responses:
+        '200':
+          description: JSON Web Key Set
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /products:
+    get:
+      tags:
+        - Catalog - Public
+      summary: List active products
+      description: Public endpoint. Only ACTIVE products are returned.
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SizeParam'
+        - $ref: '#/components/parameters/SortParam'
+      responses:
+        '200':
+          description: Page of active products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPage'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /products/{id}:
+    get:
+      tags:
+        - Catalog - Public
+      summary: Get an active product by id
+      description: Public endpoint. An INACTIVE product is reported as not found.
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      responses:
+        '200':
+          description: Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '404':
+          description: Product not found or inactive
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /admin/products:
+    get:
+      tags:
+        - Catalog - Admin
+      summary: List all products
+      description: Requires a bearer token with the ADMIN role.
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SizeParam'
+        - $ref: '#/components/parameters/SortParam'
+      responses:
+        '200':
+          description: Page of all products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPage'
+        '403':
+          description: Caller does not have the ADMIN role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    post:
+      tags:
+        - Catalog - Admin
+      summary: Create a product
+      description: Requires a bearer token with the ADMIN role.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        '201':
+          description: Product created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          description: Validation failure or malformed JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Caller does not have the ADMIN role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /admin/products/{id}:
+    put:
+      tags:
+        - Catalog - Admin
+      summary: Replace a product
+      description: Requires a bearer token with the ADMIN role.
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        '200':
+          description: Product updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          description: Validation failure or malformed JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Caller does not have the ADMIN role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /admin/products/{id}/status:
+    patch:
+      tags:
+        - Catalog - Admin
+      summary: Change a product status
+      description: Requires a bearer token with the ADMIN role.
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatusRequest'
+      responses:
+        '200':
+          description: Product with updated status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          description: Validation failure or malformed JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Caller does not have the ADMIN role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /admin/products/{id}/restock:
+    post:
+      tags:
+        - Catalog - Admin
+      summary: Increase product stock
+      description: Requires a bearer token with the ADMIN role.
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RestockRequest'
+      responses:
+        '200':
+          description: Product with updated stock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          description: Validation failure or malformed JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Caller does not have the ADMIN role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /internal/inventory/reserve:
+    post:
+      tags:
+        - Catalog - Internal
+      summary: Reserve stock for an order
+      description: |-
+        Service-to-service only. Not routed through the gateway. Requires the
+        X-Internal-Service-Token header configured via dpp.internal.service-token.
+      security:
+        - internalServiceToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservationRequest'
+      responses:
+        '201':
+          description: Stock reserved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponse'
+        '400':
+          description: Validation failure or malformed JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /internal/inventory/reservations/{orderId}:
+    get:
+      tags:
+        - Catalog - Internal
+      summary: Get the reservation for an order
+      description: Service-to-service only. Not routed through the gateway.
+      security:
+        - internalServiceToken: []
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      responses:
+        '200':
+          description: Reservation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponse'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /internal/inventory/reservations/{orderId}/commit:
+    post:
+      tags:
+        - Catalog - Internal
+      summary: Commit a held reservation
+      description: Service-to-service only. Not routed through the gateway.
+      security:
+        - internalServiceToken: []
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      responses:
+        '200':
+          description: Committed reservation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponse'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /internal/inventory/reservations/{orderId}/release:
+    post:
+      tags:
+        - Catalog - Internal
+      summary: Release a held reservation
+      description: Service-to-service only. Not routed through the gateway.
+      security:
+        - internalServiceToken: []
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      responses:
+        '200':
+          description: Released reservation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponse'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /orders:
+    post:
+      tags:
+        - Orders
+      summary: Create an order
+      description: Requires a customer bearer token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '201':
+          description: Order created in PENDING state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+        '400':
+          description: Validation failure or malformed JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '409':
+          description: Conflict such as insufficient stock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    get:
+      tags:
+        - Orders
+      summary: List orders belonging to the current customer
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SizeParam'
+        - $ref: '#/components/parameters/SortParam'
+      responses:
+        '200':
+          description: Page of the current customer's orders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderPage'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /orders/{id}:
+    get:
+      tags:
+        - Orders
+      summary: Get an order by id
+      description: A customer may read their own order; an ADMIN may read any order.
+      parameters:
+        - $ref: '#/components/parameters/OrderPathId'
+      responses:
+        '200':
+          description: Order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+        '404':
+          description: Order not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /orders/{id}/cancel:
+    post:
+      tags:
+        - Orders
+      summary: Cancel an order
+      description: A customer may cancel their own order; an ADMIN may cancel any order.
+      parameters:
+        - $ref: '#/components/parameters/OrderPathId'
+      responses:
+        '200':
+          description: Cancelled order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+        '409':
+          description: State transition not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /admin/orders:
+    get:
+      tags:
+        - Orders - Admin
+      summary: List all orders, optionally filtered by status
+      description: Requires a bearer token with the ADMIN role.
+      parameters:
+        - name: status
+          in: query
+          required: false
+          description: Optional OrderStatus filter.
+          schema:
+            $ref: '#/components/schemas/OrderStatus'
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SizeParam'
+        - $ref: '#/components/parameters/SortParam'
+      responses:
+        '200':
+          description: Page of orders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderPage'
+        '403':
+          description: Caller does not have the ADMIN role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /admin/orders/{id}:
+    get:
+      tags:
+        - Orders - Admin
+      summary: Get any order by id
+      description: Requires a bearer token with the ADMIN role.
+      parameters:
+        - $ref: '#/components/parameters/OrderPathId'
+      responses:
+        '200':
+          description: Order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+        '403':
+          description: Caller does not have the ADMIN role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /internal/orders/{id}:
+    get:
+      tags:
+        - Orders - Internal
+      summary: Service-to-service order lookup
+      description: |-
+        Not routed through the gateway. Requires the X-Internal-Service-Token
+        header; used by payment-service to verify ownership, amount and state.
+      security:
+        - internalServiceToken: []
+      parameters:
+        - $ref: '#/components/parameters/OrderPathId'
+      responses:
+        '200':
+          description: Order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /payments:
+    post:
+      tags:
+        - Payments
+      summary: Create a payment attempt for a pending order
+      description: |-
+        Requires a customer bearer token and the Idempotency-Key header. The
+        controller declares the header optional, but PaymentService rejects a
+        missing/blank value with 400 VALIDATION_ERROR. Reusing a key with a
+        different payload returns 409 IDEMPOTENCY_KEY_REUSE; a matching replay
+        returns the existing attempt with 201.
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKeyHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePaymentRequest'
+      responses:
+        '201':
+          description: Payment attempt created in PENDING state (or idempotent replay)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+        '400':
+          description: Validation failure, missing idempotency key, or malformed JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '409':
+          description: Idempotency key reuse with a different payload, or order conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    get:
+      tags:
+        - Payments
+      summary: List payment attempts belonging to the current customer
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SizeParam'
+        - $ref: '#/components/parameters/SortParam'
+      responses:
+        '200':
+          description: Page of the current customer's payment attempts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentPage'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /payments/{id}:
+    get:
+      tags:
+        - Payments
+      summary: Get a payment attempt by id
+      description: A customer may read their own payment; an ADMIN may read any payment.
+      parameters:
+        - $ref: '#/components/parameters/PaymentId'
+      responses:
+        '200':
+          description: Payment attempt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+        '404':
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /payments/by-order/{orderId}:
+    get:
+      tags:
+        - Payments
+      summary: Find a payment attempt by order id
+      description: A customer may query only their own order; an ADMIN may query any order.
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      responses:
+        '200':
+          description: Payment attempt for the order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+        '404':
+          description: No payment found for the order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /payments/{id}/confirm:
+    post:
+      tags:
+        - Payments
+      summary: Confirm a pending payment with a simulated outcome
+      description: Requires a bearer token. A non-pending attempt is returned unchanged.
+      parameters:
+        - $ref: '#/components/parameters/PaymentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmPaymentRequest'
+      responses:
+        '200':
+          description: Payment attempt after confirmation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+        '400':
+          description: Validation failure or malformed JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /admin/payments:
+    get:
+      tags:
+        - Payments - Admin
+      summary: List all payment attempts
+      description: Requires a bearer token with the ADMIN role.
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SizeParam'
+        - $ref: '#/components/parameters/SortParam'
+      responses:
+        '200':
+          description: Page of payment attempts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentPage'
+        '403':
+          description: Caller does not have the ADMIN role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /admin/payments/{id}:
+    get:
+      tags:
+        - Payments - Admin
+      summary: Get any payment attempt by id
+      description: Requires a bearer token with the ADMIN role.
+      parameters:
+        - $ref: '#/components/parameters/PaymentId'
+      responses:
+        '200':
+          description: Payment attempt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+        '403':
+          description: Caller does not have the ADMIN role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /admin/payments/{id}/refund:
+    post:
+      tags:
+        - Payments - Admin
+      summary: Refund a successful payment
+      description: |-
+        Requires a bearer token with the ADMIN role. Only SUCCESS payments can
+        be refunded. An omitted amount refunds the full payment amount.
+      parameters:
+        - $ref: '#/components/parameters/PaymentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefundRequest'
+      responses:
+        '200':
+          description: Refund recorded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundResponse'
+        '400':
+          description: Validation failure or malformed JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '409':
+          description: Payment is not in a refundable state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /webhooks/stripe:
+    post:
+      tags:
+        - Webhooks
+      summary: Receive a Stripe payment-intent webhook
+      description: |-
+        Public endpoint. The raw JSON body is verified using Stripe-Signature
+        when the Stripe provider is configured; invalid signatures, malformed
+        JSON and missing event ids return 400 with no body. Duplicate or
+        unhandled event types return 200 and are ignored.
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/StripeSignatureHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StripeWebhookEvent'
+      responses:
+        '200':
+          description: Event accepted, deduplicated, or ignored (no response body)
+        '400':
+          description: Invalid signature, malformed payload or missing event id (no response body)
+  /notifications:
+    get:
+      tags:
+        - Notifications
+      summary: List notifications for the current customer
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SizeParam'
+        - $ref: '#/components/parameters/SortParam'
+      responses:
+        '200':
+          description: Page of the current customer's notifications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPage'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /notifications/{id}:
+    get:
+      tags:
+        - Notifications
+      summary: Get a notification by id
+      description: A customer may read their own notification; an ADMIN may read any notification.
+      parameters:
+        - $ref: '#/components/parameters/NotificationId'
+      responses:
+        '200':
+          description: Notification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationResponse'
+        '404':
+          description: Notification not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /admin/notifications:
+    get:
+      tags:
+        - Notifications - Admin
+      summary: List all notifications, optionally filtered by status
+      description: Requires a bearer token with the ADMIN role.
+      parameters:
+        - name: status
+          in: query
+          required: false
+          description: Optional NotificationStatus filter.
+          schema:
+            $ref: '#/components/schemas/NotificationStatus'
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SizeParam'
+        - $ref: '#/components/parameters/SortParam'
+      responses:
+        '200':
+          description: Page of notifications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPage'
+        '403':
+          description: Caller does not have the ADMIN role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /admin/notifications/{id}:
+    get:
+      tags:
+        - Notifications - Admin
+      summary: Get any notification by id
+      description: Requires a bearer token with the ADMIN role.
+      parameters:
+        - $ref: '#/components/parameters/NotificationId'
+      responses:
+        '200':
+          description: Notification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationResponse'
+        '403':
+          description: Caller does not have the ADMIN role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          description: Error response using the shared ApiError shape
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /actuator/health:
+    get:
+      tags:
+        - Operations
+      summary: Gateway health probe
+      description: |-
+        Public on the gateway. Only the status field is guaranteed; component
+        details depend on actuator configuration.
+      security: []
+      responses:
+        '200':
+          description: Health status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token issued by POST /auth/login or POST /auth/refresh.
+    internalServiceToken:
+      type: apiKey
+      in: header
+      name: X-Internal-Service-Token
+      description: Shared secret for service-to-service /internal/** endpoints; not a customer credential.
+  parameters:
+    CorrelationIdHeader:
+      name: X-Correlation-Id
+      in: header
+      required: false
+      description: Optional correlation id; echoed in the response by the correlation filter.
+      schema:
+        type: string
+        format: uuid
+    IdempotencyKeyHeader:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: Required by PaymentService. Reuse with a different payload returns 409 IDEMPOTENCY_KEY_REUSE.
+      schema:
+        type: string
+    StripeSignatureHeader:
+      name: Stripe-Signature
+      in: header
+      required: false
+      description: Stripe signature header used by the Stripe provider for webhook verification.
+      schema:
+        type: string
+    PageParam:
+      name: page
+      in: query
+      required: false
+      description: Zero-based page index accepted by Spring Data Pageable.
+      schema:
+        type: integer
+        minimum: 0
+    SizeParam:
+      name: size
+      in: query
+      required: false
+      description: Page size accepted by Spring Data Pageable.
+      schema:
+        type: integer
+        minimum: 1
+    SortParam:
+      name: sort
+      in: query
+      required: false
+      description: Spring Data sort expression, for example "name,asc".
+      schema:
+        type: string
+    ProductId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    OrderId:
+      name: orderId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    OrderPathId:
+      name: id
+      in: path
+      required: true
+      description: Order id.
+      schema:
+        type: string
+        format: uuid
+    PaymentId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    NotificationId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    FieldViolation:
+      type: object
+      required:
+        - field
+        - message
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+    ApiError:
+      type: object
+      description: Shared error response emitted by GlobalExceptionHandler.
+      required:
+        - timestamp
+        - status
+        - error
+        - code
+        - message
+        - path
+        - correlationId
+        - violations
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        code:
+          type: string
+          enum:
+            - VALIDATION_ERROR
+            - MALFORMED_REQUEST
+            - UNAUTHORIZED
+            - FORBIDDEN
+            - NOT_FOUND
+            - CONFLICT
+            - IDEMPOTENCY_KEY_REUSE
+            - INSUFFICIENT_STOCK
+            - INVALID_STATE_TRANSITION
+            - SERVICE_UNAVAILABLE
+            - INTERNAL_ERROR
+        message:
+          type: string
+        path:
+          type: string
+        correlationId:
+          type: string
+          nullable: true
+        violations:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldViolation'
+    RegisterRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 72
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+          format: password
+    RefreshRequest:
+      type: object
+      required:
+        - refreshToken
+      properties:
+        refreshToken:
+          type: string
+    TokenResponse:
+      type: object
+      required:
+        - accessToken
+        - refreshToken
+        - tokenType
+        - expiresIn
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        tokenType:
+          type: string
+          example: Bearer
+        expiresIn:
+          type: integer
+          format: int64
+    UserResponse:
+      type: object
+      required:
+        - id
+        - email
+        - roles
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+    ProductStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+    ProductRequest:
+      type: object
+      required:
+        - sku
+        - name
+        - price
+        - currency
+        - totalStock
+      properties:
+        sku:
+          type: string
+          minLength: 3
+          maxLength: 64
+        name:
+          type: string
+          maxLength: 160
+        description:
+          type: string
+          maxLength: 2000
+          nullable: true
+        price:
+          type: number
+          format: decimal
+          minimum: 0
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+        totalStock:
+          type: integer
+          minimum: 0
+    ProductResponse:
+      type: object
+      required:
+        - id
+        - sku
+        - name
+        - price
+        - currency
+        - status
+        - totalStock
+        - reservedStock
+        - availableStock
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        sku:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        price:
+          type: number
+          format: decimal
+        currency:
+          type: string
+        status:
+          $ref: '#/components/schemas/ProductStatus'
+        totalStock:
+          type: integer
+        reservedStock:
+          type: integer
+        availableStock:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+    ProductPage:
+      type: object
+      description: Spring Data Page of products. Other serialization fields may be present.
+      required:
+        - content
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductResponse'
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+        number:
+          type: integer
+        size:
+          type: integer
+        numberOfElements:
+          type: integer
+        first:
+          type: boolean
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    StatusRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          $ref: '#/components/schemas/ProductStatus'
+    RestockRequest:
+      type: object
+      required:
+        - quantity
+      properties:
+        quantity:
+          type: integer
+          minimum: 1
+    ReservationStatus:
+      type: string
+      enum:
+        - HELD
+        - COMMITTED
+        - RELEASED
+    ReservationRequest:
+      type: object
+      required:
+        - orderId
+        - items
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        items:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+              - productId
+              - quantity
+            properties:
+              productId:
+                type: string
+                format: uuid
+              quantity:
+                type: integer
+                minimum: 1
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+    ReservationResponse:
+      type: object
+      required:
+        - id
+        - orderId
+        - status
+        - items
+        - expiresAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/ReservationStatus'
+        items:
+          type: array
+          items:
+            type: object
+            required:
+              - productId
+              - quantity
+            properties:
+              productId:
+                type: string
+                format: uuid
+              quantity:
+                type: integer
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+    OrderStatus:
+      type: string
+      enum:
+        - PENDING
+        - CONFIRMED
+        - FAILED
+        - CANCELLED
+        - REFUND_PENDING
+        - REFUNDED
+    CreateOrderRequest:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+              - productId
+              - quantity
+            properties:
+              productId:
+                type: string
+                format: uuid
+              quantity:
+                type: integer
+                minimum: 1
+    OrderResponse:
+      type: object
+      required:
+        - id
+        - customerId
+        - customerEmail
+        - status
+        - totalAmount
+        - currency
+        - items
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        customerId:
+          type: string
+          format: uuid
+        customerEmail:
+          type: string
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+        totalAmount:
+          type: number
+          format: decimal
+        currency:
+          type: string
+        items:
+          type: array
+          items:
+            type: object
+            required:
+              - productId
+              - sku
+              - name
+              - quantity
+              - unitPrice
+            properties:
+              productId:
+                type: string
+                format: uuid
+              sku:
+                type: string
+              name:
+                type: string
+              quantity:
+                type: integer
+              unitPrice:
+                type: number
+                format: decimal
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    OrderPage:
+      type: object
+      description: Spring Data Page of orders. Other serialization fields may be present.
+      required:
+        - content
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderResponse'
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+        number:
+          type: integer
+        size:
+          type: integer
+        numberOfElements:
+          type: integer
+        first:
+          type: boolean
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    CreatePaymentRequest:
+      type: object
+      required:
+        - orderId
+        - amount
+        - currency
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          format: decimal
+          minimum: 0.01
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          pattern: '[A-Za-z]{3}'
+    ConfirmPaymentRequest:
+      type: object
+      required:
+        - outcome
+      properties:
+        outcome:
+          type: string
+          enum:
+            - SUCCEEDED
+            - FAILED
+    PaymentStatus:
+      type: string
+      enum:
+        - PENDING
+        - SUCCESS
+        - FAILED
+        - REFUND_PENDING
+        - REFUNDED
+    PaymentResponse:
+      type: object
+      required:
+        - id
+        - orderId
+        - customerId
+        - status
+        - amount
+        - currency
+        - provider
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        customerId:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/PaymentStatus'
+        amount:
+          type: number
+          format: decimal
+        currency:
+          type: string
+        provider:
+          type: string
+        providerPaymentId:
+          type: string
+          nullable: true
+        failureCode:
+          type: string
+          nullable: true
+        failureMessage:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PaymentPage:
+      type: object
+      description: Spring Data Page of payment attempts. Other serialization fields may be present.
+      required:
+        - content
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentResponse'
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+        number:
+          type: integer
+        size:
+          type: integer
+        numberOfElements:
+          type: integer
+        first:
+          type: boolean
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    RefundRequest:
+      type: object
+      description: Both fields are optional; an omitted amount refunds the full payment.
+      properties:
+        amount:
+          type: number
+          format: decimal
+          minimum: 0.01
+        reason:
+          type: string
+          maxLength: 256
+    RefundStatus:
+      type: string
+      enum:
+        - PENDING
+        - SUCCEEDED
+        - FAILED
+    RefundResponse:
+      type: object
+      required:
+        - id
+        - paymentId
+        - orderId
+        - amount
+        - currency
+        - status
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        paymentId:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          format: decimal
+        currency:
+          type: string
+        status:
+          $ref: '#/components/schemas/RefundStatus'
+        providerRefundId:
+          type: string
+          nullable: true
+        reason:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    StripeWebhookEvent:
+      type: object
+      description: |-
+        Raw webhook payload. Only the fields below are read by the controller;
+        a real Stripe event contains additional fields.
+      required:
+        - id
+        - type
+      properties:
+        id:
+          type: string
+          description: Event id used for deduplication.
+        type:
+          type: string
+          description: Handled values are payment_intent.succeeded, payment_intent.payment_failed and payment_intent.canceled.
+        data:
+          type: object
+          properties:
+            object:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: Provider payment id.
+                last_payment_error:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                    message:
+                      type: string
+    NotificationStatus:
+      type: string
+      enum:
+        - PENDING
+        - SENT
+        - FAILED
+    NotificationResponse:
+      type: object
+      required:
+        - id
+        - eventId
+        - eventType
+        - orderId
+        - customerId
+        - recipient
+        - channel
+        - subject
+        - body
+        - status
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        eventId:
+          type: string
+          format: uuid
+        eventType:
+          type: string
+        orderId:
+          type: string
+          format: uuid
+          nullable: true
+        customerId:
+          type: string
+          format: uuid
+          nullable: true
+        recipient:
+          type: string
+          nullable: true
+        channel:
+          type: string
+        subject:
+          type: string
+          nullable: true
+        body:
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/NotificationStatus'
+        error:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        deliveredAt:
+          type: string
+          format: date-time
+          nullable: true
+    NotificationPage:
+      type: object
+      description: Spring Data Page of notifications. Other serialization fields may be present.
+      required:
+        - content
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationResponse'
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+        number:
+          type: integer
+        size:
+          type: integer
+        numberOfElements:
+          type: integer
+        first:
+          type: boolean
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    HealthResponse:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          description: Actuator health status; additional component fields are deployment-dependent.

@@ -1,0 +1,33 @@
+$kind: http-request
+description: Requires a customer bearer token.
+url: "{{base_url}}/orders"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
+body:
+  type: json
+  content: |-
+    {
+      "items": [
+        {
+          "productId": "{{product_id}}",
+          "quantity": 1
+        }
+      ]
+    }
+settings: {}
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('create order returns 201 with a pending order', function () {
+        pm.response.to.have.status(201);
+        const body = pm.response.json();
+        pm.expect(body.id).to.be.a('string');
+        pm.expect(body.status).to.eql('PENDING');
+        pm.expect(body.items).to.be.an('array').that.is.not.empty;
+        pm.environment.set('order_id', body.id);
+      });
+examples: ./.resources/Create an order.resources/examples
+order: 1000

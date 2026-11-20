@@ -1,0 +1,8 @@
+$kind: collection
+name: Orders - Admin
+description: ADMIN-only order inspection.
+order: 6000
+auth:
+  type: bearer
+  credentials:
+    token: '{{adminToken}}'

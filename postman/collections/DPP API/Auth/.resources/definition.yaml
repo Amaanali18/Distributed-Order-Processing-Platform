@@ -1,0 +1,6 @@
+$kind: collection
+name: Auth
+description: Registration and token flows. Most requests are public; /auth/me overrides with bearer auth.
+order: 1000
+auth:
+  type: noauth

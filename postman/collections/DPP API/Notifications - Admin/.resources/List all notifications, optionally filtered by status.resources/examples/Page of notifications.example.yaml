@@ -1,0 +1,68 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/admin/notifications?status=<string>&page=0&size=20"
+  method: GET
+  headers:
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+    - key: Accept
+      value: application/json
+  queryParams:
+    status: <string>
+    page: "0"
+    size: "20"
+  body:
+    type: text
+    content: ""
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "content": [
+          {
+            "id": "5774d936-d7c7-0a3a-d720-a4d883c9e8fa",
+            "eventId": "65b332d9-9c55-5948-7d3a-d85c0053d556",
+            "eventType": "string",
+            "orderId": "7cfbc16a-983f-33a4-1d5a-874b805e4c0b",
+            "customerId": "eae34986-81b6-cf12-4a6f-d9e1b16dacb0",
+            "recipient": "string",
+            "channel": "string",
+            "subject": "string",
+            "body": "string",
+            "status": "<string>",
+            "createdAt": "2009-09-07T10:35:15.311Z",
+            "error": "string",
+            "deliveredAt": "2010-12-30T03:59:42.475Z"
+          },
+          {
+            "id": "40e20de2-cfc5-6658-c9dc-97ad2b02815f",
+            "eventId": "b815d2e1-9ae1-1cac-227d-e0ac44858a34",
+            "eventType": "string",
+            "orderId": "b9826b77-cd96-7818-43da-23447ed32a7b",
+            "customerId": "6b5fae5a-ee99-2377-b609-159d95d5f49d",
+            "recipient": "string",
+            "channel": "string",
+            "subject": "string",
+            "body": "string",
+            "status": "<string>",
+            "createdAt": "1975-10-19T16:44:17.036Z",
+            "error": "string",
+            "deliveredAt": "2020-09-21T12:45:27.134Z"
+          }
+        ],
+        "totalElements": 9158,
+        "totalPages": 5916,
+        "number": 6221,
+        "size": 7289,
+        "numberOfElements": 5929,
+        "first": false,
+        "last": true,
+        "empty": true
+      }
+order: 1000

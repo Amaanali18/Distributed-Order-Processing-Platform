@@ -1,0 +1,14 @@
+$kind: http-request
+description: A customer may cancel their own order; an ADMIN may cancel any order.
+url: "{{base_url}}/orders/:id/cancel"
+method: POST
+headers:
+  Accept: application/json
+pathVariables:
+  - key: id
+    value: '{{order_id}}'
+    disabled: false
+    description: (Required) Order id.
+settings: {}
+examples: ./.resources/Cancel an order.resources/examples
+order: 4000

@@ -1,0 +1,38 @@
+$kind: http-example
+name: Invalid signature, malformed payload or missing event id (no response body)
+request:
+  url: "{{base_url}}/webhooks/stripe"
+  method: POST
+  headers:
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+    - key: Stripe-Signature
+      value: string
+      disabled: false
+      description: Stripe signature header used by the Stripe provider for webhook verification.
+  body:
+    type: json
+    content: |-
+      {
+        "id": "string",
+        "type": "string",
+        "data": {
+          "object": {
+            "id": "string",
+            "last_payment_error": {
+              "code": "string",
+              "message": "string"
+            }
+          }
+        }
+      }
+response:
+  statusCode: 400
+  statusText: Bad Request
+  headers:
+    Content-Type: text/plain
+  body:
+    type: text
+    content: ""
+order: 2000

@@ -25,8 +25,10 @@ public class NotificationService {
             EventTypes.ORDER_CREATED,
             EventTypes.ORDER_CONFIRMED,
             EventTypes.ORDER_CANCELLED,
+            EventTypes.ORDER_FAILED,
             EventTypes.PAYMENT_SUCCEEDED,
             EventTypes.PAYMENT_FAILED,
+            EventTypes.REFUND_PENDING,
             EventTypes.REFUND_COMPLETED);
 
     private final NotificationRepository notifications;

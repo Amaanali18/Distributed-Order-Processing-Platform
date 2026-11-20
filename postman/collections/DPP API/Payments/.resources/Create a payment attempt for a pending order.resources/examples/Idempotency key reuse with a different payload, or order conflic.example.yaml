@@ -1,0 +1,51 @@
+$kind: http-example
+name: Idempotency key reuse with a different payload, or order conflict
+request:
+  url: "{{base_url}}/payments"
+  method: POST
+  headers:
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+    - key: Idempotency-Key
+      value: string
+      disabled: false
+      description: (Required) Required by PaymentService. Reuse with a different payload returns 409 IDEMPOTENCY_KEY_REUSE.
+    - key: Accept
+      value: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "orderId": "aaa70a31-6fb9-b4c0-75e7-2ecfb657dc2b",
+        "amount": 9910.336794587998,
+        "currency": "bqX"
+      }
+response:
+  statusCode: 409
+  statusText: Conflict
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "timestamp": "1964-01-06T06:48:51.647Z",
+        "status": 9023,
+        "error": "string",
+        "code": "IDEMPOTENCY_KEY_REUSE",
+        "message": "string",
+        "path": "string",
+        "correlationId": "string",
+        "violations": [
+          {
+            "field": "string",
+            "message": "string"
+          },
+          {
+            "field": "string",
+            "message": "string"
+          }
+        ]
+      }
+order: 3000

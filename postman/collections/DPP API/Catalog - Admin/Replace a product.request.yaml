@@ -1,0 +1,26 @@
+$kind: http-request
+description: Requires a bearer token with the ADMIN role.
+url: "{{base_url}}/admin/products/:id"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: application/json
+pathVariables:
+  - key: id
+    value: '{{product_id}}'
+    disabled: false
+    description: "(Required) "
+body:
+  type: json
+  content: |-
+    {
+      "sku": "{{product_sku}}-replaced",
+      "name": "Postman Replacement Widget",
+      "price": 12.50,
+      "currency": "USD",
+      "totalStock": 10,
+      "description": "Replaced by the DPP API Postman collection."
+    }
+settings: {}
+examples: ./.resources/Replace a product.resources/examples
+order: 3000

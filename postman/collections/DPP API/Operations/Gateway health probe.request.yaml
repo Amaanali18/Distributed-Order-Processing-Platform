@@ -1,0 +1,20 @@
+$kind: http-request
+description: |-
+  Public on the gateway. Only the status field is guaranteed; component
+  details depend on actuator configuration.
+url: "{{base_url}}/actuator/health"
+method: GET
+headers:
+  Accept: application/json
+settings: {}
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('gateway health returns 200 with a status', function () {
+        pm.response.to.have.status(200);
+        const body = pm.response.json();
+        pm.expect(body).to.have.property('status').that.is.a('string');
+      });
+examples: ./.resources/Gateway health probe.resources/examples
+order: 1000

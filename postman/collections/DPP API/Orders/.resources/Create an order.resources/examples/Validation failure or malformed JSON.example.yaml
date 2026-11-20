@@ -1,0 +1,49 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/orders"
+  method: POST
+  headers:
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+    - key: Accept
+      value: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "items": [
+          {
+            "productId": "7a9902d1-8b83-f09e-abf7-e410b0b7998a",
+            "quantity": 8745
+          }
+        ]
+      }
+response:
+  statusCode: 400
+  statusText: Bad Request
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "timestamp": "1964-01-06T06:48:51.647Z",
+        "status": 9023,
+        "error": "string",
+        "code": "IDEMPOTENCY_KEY_REUSE",
+        "message": "string",
+        "path": "string",
+        "correlationId": "string",
+        "violations": [
+          {
+            "field": "string",
+            "message": "string"
+          },
+          {
+            "field": "string",
+            "message": "string"
+          }
+        ]
+      }
+order: 2000

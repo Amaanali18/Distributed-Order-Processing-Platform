@@ -1,0 +1,8 @@
+$kind: collection
+name: Notifications - Admin
+description: ADMIN-only notification inspection.
+order: 11000
+auth:
+  type: bearer
+  credentials:
+    token: '{{adminToken}}'

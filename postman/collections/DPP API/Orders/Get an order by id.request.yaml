@@ -1,0 +1,14 @@
+$kind: http-request
+description: A customer may read their own order; an ADMIN may read any order.
+url: "{{base_url}}/orders/:id"
+method: GET
+headers:
+  Accept: application/json
+pathVariables:
+  - key: id
+    value: '{{order_id}}'
+    disabled: false
+    description: (Required) Order id.
+settings: {}
+examples: ./.resources/Get an order by id.resources/examples
+order: 3000

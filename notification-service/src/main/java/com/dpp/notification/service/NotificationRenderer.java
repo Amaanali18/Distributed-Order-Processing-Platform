@@ -26,6 +26,10 @@ public class NotificationRenderer {
                     "Order cancelled",
                     "Order " + orderId + " was cancelled ("
                             + text(payload, "reason", "no reason given") + ").");
+            case EventTypes.ORDER_FAILED -> new Rendered(
+                    "Order failed",
+                    "Order " + orderId + " could not be completed ("
+                            + text(payload, "reason", "unknown reason") + ").");
             case EventTypes.PAYMENT_SUCCEEDED -> new Rendered(
                     "Payment received",
                     "We received your payment of " + money(payload) + " for order " + orderId + ".");
@@ -33,6 +37,9 @@ public class NotificationRenderer {
                     "Payment failed",
                     "Your payment for order " + orderId + " failed ("
                             + text(payload, "reason", "unknown reason") + ").");
+            case EventTypes.REFUND_PENDING -> new Rendered(
+                    "Refund in progress",
+                    "A refund of " + money(payload) + " for order " + orderId + " is being processed.");
             case EventTypes.REFUND_COMPLETED -> new Rendered(
                     "Refund processed",
                     "A refund of " + money(payload) + " for order " + orderId + " has been processed.");

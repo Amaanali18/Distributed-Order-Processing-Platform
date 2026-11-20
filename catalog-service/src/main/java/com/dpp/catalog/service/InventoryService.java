@@ -106,6 +106,21 @@ public class InventoryService {
         return ReservationResponse.from(reservation);
     }
 
+    @Transactional
+    public int releaseExpired() {
+        Instant now = Instant.now();
+        List<Reservation> expired =
+                reservations.findTop200ByStatusAndExpiresAtBeforeOrderByExpiresAtAsc(ReservationStatus.HELD, now);
+        for (Reservation reservation : expired) {
+            for (ReservationItem item : reservation.getItems()) {
+                products.releaseStock(item.getProductId(), item.getQuantity(), now);
+            }
+            reservation.release();
+            reservations.save(reservation);
+        }
+        return expired.size();
+    }
+
     @Transactional(readOnly = true)
     public ReservationResponse get(UUID orderId) {
         return reservations.findByOrderId(orderId)

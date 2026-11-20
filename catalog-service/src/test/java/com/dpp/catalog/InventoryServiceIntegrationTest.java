@@ -18,6 +18,11 @@ import org.springframework.test.context.TestPropertySource;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -117,6 +122,59 @@ class InventoryServiceIntegrationTest extends AbstractPostgresIntegrationTest {
         assertThat(after.totalStock()).isEqualTo(5);
         assertThat(after.reservedStock()).isZero();
         assertThat(after.availableStock()).isEqualTo(5);
+    }
+
+    @Test
+    void expirySweepReleasesHeldReservation() {
+        ProductResponse product = newProduct(5);
+        UUID orderId = UUID.randomUUID();
+        inventory.reserve(new ReservationRequest(orderId,
+                List.of(new ReservationRequest.Item(product.id(), 2)),
+                java.time.Instant.now().minusSeconds(60)));
+
+        int released = inventory.releaseExpired();
+
+        assertThat(released).isEqualTo(1);
+        ProductResponse after = products.get(product.id());
+        assertThat(after.reservedStock()).isZero();
+        assertThat(after.availableStock()).isEqualTo(5);
+        assertThat(inventory.get(orderId).status())
+                .isEqualTo(com.dpp.catalog.domain.ReservationStatus.RELEASED);
+    }
+
+    @Test
+    void concurrentReserveNeverOversellsStock() throws Exception {
+        ProductResponse product = newProduct(5);
+        ExecutorService executor = Executors.newFixedThreadPool(8);
+        try {
+            List<Callable<Boolean>> attempts = IntStream.range(0, 8)
+                    .mapToObj(ignored -> (Callable<Boolean>) () -> {
+                        try {
+                            inventory.reserve(reserveRequest(UUID.randomUUID(), product.id(), 1));
+                            return true;
+                        } catch (ApiException ex) {
+                            if (ex.errorCode() == ErrorCode.INSUFFICIENT_STOCK) {
+                                return false;
+                            }
+                            throw ex;
+                        }
+                    })
+                    .toList();
+
+            int reserved = 0;
+            for (Future<Boolean> attempt : executor.invokeAll(attempts)) {
+                if (attempt.get()) {
+                    reserved++;
+                }
+            }
+
+            assertThat(reserved).isEqualTo(5);
+            ProductResponse after = products.get(product.id());
+            assertThat(after.reservedStock()).isEqualTo(5);
+            assertThat(after.availableStock()).isZero();
+        } finally {
+            executor.shutdownNow();
+        }
     }
 
     @Test

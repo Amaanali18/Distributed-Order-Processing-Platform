@@ -1,0 +1,31 @@
+stateDiagram-v2
+    [*] --> PENDING: POST /payments with Idempotency-Key
+    PENDING --> SUCCESS: confirm SUCCEEDED or verified webhook
+    PENDING --> FAILED: confirm FAILED or verified webhook
+    PENDING --> PENDING: order terminated, cancellation flag set, status unchanged
+    SUCCESS --> REFUND_PENDING: refund accepted as pending
+    SUCCESS --> REFUNDED: refund completed immediately
+    REFUND_PENDING --> REFUNDED: refund reconciled as succeeded
+    REFUND_PENDING --> SUCCESS: refund failed, attempt reverts to SUCCESS
+    SUCCESS --> REFUND_PENDING: late success after order termination, refund pending
+    SUCCESS --> REFUNDED: late success after order termination, refund completed
+
+    note right of PENDING
+        Durable idempotency key is unique in the database. Reuse with
+        the same payload returns the original attempt; reuse with a
+        different payload is rejected. Stale PENDING attempts are
+        reconciled against the provider, never blindly retried.
+    end note
+
+    note right of SUCCESS
+        Intended behavior: a payment that settles after its order was
+        cancelled or failed is fully compensated. The cancellation flag
+        is set while the attempt is still PENDING and is checked when
+        the provider result arrives.
+    end note
+
+    note right of REFUND_PENDING
+        A pending provider refund is reconciled by the scheduled job.
+        If the provider later reports failure, the attempt reverts to
+        SUCCESS and the refund record is marked FAILED.
+    end note

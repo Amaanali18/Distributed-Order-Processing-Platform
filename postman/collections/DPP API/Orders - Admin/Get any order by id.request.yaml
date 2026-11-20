@@ -1,0 +1,14 @@
+$kind: http-request
+description: Requires a bearer token with the ADMIN role.
+url: "{{base_url}}/admin/orders/:id"
+method: GET
+headers:
+  Accept: application/json
+pathVariables:
+  - key: id
+    value: '{{order_id}}'
+    disabled: false
+    description: (Required) Order id.
+settings: {}
+examples: ./.resources/Get any order by id.resources/examples
+order: 2000

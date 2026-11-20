@@ -101,7 +101,7 @@ $paymentRetry = Call -Method POST -Path '/payments' -Token $customerToken -Heade
 Assert-True 'payment create is idempotent (same id)' ($paymentRetry.Json.id -eq $paymentId) "id1=$paymentId id2=$($paymentRetry.Json.id)"
 
 $confirm = Call -Method POST -Path "/payments/$paymentId/confirm" -Token $customerToken -Body @{ outcome = 'SUCCEEDED' }
-Assert-True 'payment confirm succeeds' ($confirm.Status -eq 200 -and $confirm.Json.status -eq 'SUCCEEDED') "status=$($confirm.Status) $($confirm.Raw)"
+Assert-True 'payment confirm succeeds' ($confirm.Status -eq 200 -and $confirm.Json.status -eq 'SUCCESS') "status=$($confirm.Status) $($confirm.Raw)"
 
 $orderStatus = $null
 $deadline = (Get-Date).AddSeconds(40)

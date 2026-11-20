@@ -1,0 +1,43 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/admin/products"
+  method: POST
+  headers:
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+    - key: Accept
+      value: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "sku": "string",
+        "name": "string",
+        "price": 6662.384485825896,
+        "currency": "str",
+        "totalStock": 7280,
+        "description": "string"
+      }
+response:
+  statusCode: 201
+  statusText: Created
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "id": "d3cd3d32-18e6-7449-b46d-90cd9b401c30",
+        "sku": "string",
+        "name": "string",
+        "price": 8745.655354578048,
+        "currency": "string",
+        "status": "INACTIVE",
+        "totalStock": 1390,
+        "reservedStock": 8815,
+        "availableStock": 4893,
+        "createdAt": "2014-01-26T00:30:37.986Z",
+        "description": "string"
+      }
+order: 1000

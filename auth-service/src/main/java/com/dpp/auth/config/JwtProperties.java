@@ -8,5 +8,7 @@ import java.time.Duration;
 public record JwtProperties(
         String issuer,
         Duration accessTokenTtl,
-        Duration refreshTokenTtl) {
+        Duration refreshTokenTtl,
+        String jwkPath,
+        boolean generateIfMissing) {
 }

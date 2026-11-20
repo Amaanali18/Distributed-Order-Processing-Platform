@@ -1,0 +1,43 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/internal/inventory/reservations/:orderId/commit"
+  method: POST
+  headers:
+    - key: X-Internal-Service-Token
+      value: <API Key>
+      description: "Added as a part of security scheme: apikey"
+    - key: Accept
+      value: application/json
+  pathVariables:
+    - key: orderId
+      value: 623217c2-3f91-3bae-502c-2f9707f4816b
+      disabled: false
+      description: "(Required) "
+  body:
+    type: text
+    content: ""
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "id": "aa444fb5-7a82-d3b3-bf82-34448330fc2c",
+        "orderId": "bb606fd1-6b7c-795c-f7d9-d48a53d08c8d",
+        "status": "COMMITTED",
+        "items": [
+          {
+            "productId": "dae65a36-7845-9fc0-153c-6b2bd77c1274",
+            "quantity": 8829
+          },
+          {
+            "productId": "5cd986f7-bc81-b734-983e-04c5f2e273e4",
+            "quantity": 8282
+          }
+        ],
+        "expiresAt": "2026-10-29T16:22:33.570Z"
+      }
+order: 1000
